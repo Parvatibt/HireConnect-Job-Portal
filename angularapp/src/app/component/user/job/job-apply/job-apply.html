@@ -1,0 +1,125 @@
+<div class="apply-job-page">
+  <div class="apply-container">
+    <!-- Header Section -->
+    <div class="apply-header">
+      <h1><i class="bi bi-briefcase"></i> Apply for Job</h1>
+      <p>Complete your application to join our team</p>
+    </div>
+
+    <!-- Job Details Section -->
+    <div class="job-details-section">
+      <div class="job-info-card">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h2>Senior Software Developer</h2>
+            <div class="job-meta">
+              <span class="company">
+                <i class="bi bi-building"></i>
+                Tech Solutions Inc.
+              </span>
+              <span class="location">
+                <i class="bi bi-geo-alt"></i>
+                Bangalore, India
+              </span>
+              <span class="experience">
+                <i class="bi bi-clock"></i>
+                3-5 years
+              </span>
+              <span class="salary">
+                <i class="bi bi-currency-rupee"></i>
+                ₹8-15 LPA
+              </span>
+            </div>
+          </div>
+          <div class="job-actions">
+            <span class="job-type">Full-time</span>
+            <span class="posted-date">Posted 2 days ago</span>
+          </div>
+        </div>
+        <div class="job-description">
+          <h3>Job Description</h3>
+          <p>We are looking for a Senior Software Developer to join our dynamic team. You will be responsible for developing high-quality software solutions and working with cutting-edge technologies.</p>
+          <h4>Key Responsibilities:</h4>
+          <ul>
+            <li>Design and develop scalable web applications</li>
+            <li>Collaborate with cross-functional teams</li>
+            <li>Write clean, maintainable code</li>
+            <li>Participate in code reviews and technical discussions</li>
+          </ul>
+          <h4>Requirements:</h4>
+          <ul>
+            <li>Bachelor's degree in Computer Science or related field</li>
+            <li>3+ years of experience in software development</li>
+            <li>Proficiency in Angular, React, or Vue.js</li>
+            <li>Strong problem-solving skills</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Application Form -->
+    <div class="apply-form-container">
+      <form (ngSubmit)="submitApplication()" #appForm="ngForm" class="apply-form">
+        <div class="form-card">
+          <div class="card-header">
+            <h3><i class="bi bi-person-badge"></i> Application Details</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-group">
+              <label for="name">Full Name *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                <input type="text" id="name" placeholder="Enter your full name" [(ngModel)]="application.name" name="name" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" id="email" placeholder="Enter your email address" [(ngModel)]="application.email" name="email" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                <input type="tel" id="phone" placeholder="Enter your phone number" [(ngModel)]="application.phone" name="phone" class="form-control">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="coverLetter">Cover Letter</label>
+              <textarea id="coverLetter" placeholder="Tell us why you're interested in this position..." [(ngModel)]="application.coverLetter" name="coverLetter" class="form-control" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="resume">Resume/CV *</label>
+              <div class="file-upload-area">
+                <div class="upload-zone" [class.has-file]="application.resume">
+                  <i class="bi bi-cloud-upload"></i>
+                  <h4>{{application.resume ? 'Resume Selected' : 'Upload Your Resume'}}</h4>
+                  <p>{{application.resume || 'Drag & drop your resume here or click to browse'}}</p>
+                  <input type="file" id="resume" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx" hidden>
+                  <label for="resume" class="btn btn-upload">
+                    <i class="bi bi-plus-circle"></i> Choose File
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" (click)="cancelApplication()">
+                <i class="bi bi-x-circle"></i> Cancel
+              </button>
+              <button type="submit" class="btn btn-primary" [disabled]="!appForm.valid">
+                <i class="bi bi-send"></i> Submit Application
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

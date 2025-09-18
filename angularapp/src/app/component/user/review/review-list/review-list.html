@@ -1,0 +1,16 @@
+
+<div class="review-list-container">
+  <h3>What Our Users Say</h3>
+  <div *ngIf="reviews.length; else noReviews">
+    <div class="review-item" *ngFor="let review of reviews">
+      <div class="review-header">
+        <span class="review-role">{{ review.role }}</span>
+        <span class="review-date">{{ review.date }}</span>
+      </div>
+      <div class="review-content">{{ review.text }}</div>
+    </div>
+  </div>
+  <ng-template #noReviews>
+    <div class="no-reviews">No reviews yet. Be the first to share your experience!</div>
+  </ng-template>
+</div>

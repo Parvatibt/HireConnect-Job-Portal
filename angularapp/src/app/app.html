@@ -1,0 +1,12 @@
+<!-- Show normal navbar only outside admin routes -->
+<ng-container *ngIf="!isAdminRoute()">
+  <app-navbar></app-navbar>
+</ng-container>
+
+<!-- Show sidebar only inside admin routes -->
+<ng-container *ngIf="isAdminRoute()">
+  <app-admin-sidebar></app-admin-sidebar>
+</ng-container>
+
+<!-- Main outlet -->
+<router-outlet></router-outlet>

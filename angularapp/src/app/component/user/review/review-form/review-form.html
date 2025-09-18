@@ -1,0 +1,20 @@
+
+<div class="review-form-container">
+  <h3>Share Your Experience</h3>
+  <form (ngSubmit)="submitReview()" #reviewForm="ngForm">
+    <div class="form-group">
+      <label for="role">I am a:</label>
+      <select id="role" [(ngModel)]="role" name="role" required>
+        <option value="">Select</option>
+        <option value="Candidate">Candidate</option>
+        <option value="Recruiter">Recruiter</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="review">Your Review:</label>
+      <textarea id="review" [(ngModel)]="reviewText" name="reviewText" rows="3" required placeholder="Write your review..."></textarea>
+    </div>
+    <button type="submit" [disabled]="!reviewForm.form.valid">Submit Review</button>
+    <div *ngIf="submitted" class="success-msg">Thank you for your feedback!</div>
+  </form>
+</div>

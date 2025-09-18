@@ -1,0 +1,525 @@
+/* Full-page background with image */
+.companies-page {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #000;
+  color: #fff;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Floating geometric shapes - disabled to fix scrolling */
+.companies-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(circle at 20% 80%, rgba(12, 12, 12, 0.938) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, hsla(187, 89%, 4%, 0.959) 0%, transparent 50%),
+    radial-gradient(circle at 40% 40%, rgba(2, 19, 20, 0.882) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Animated particles - disabled to fix scrolling */
+.companies-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, rgba(255, 255, 255, 0.2), transparent),
+    radial-gradient(2px 2px at 40px 70px, rgba(255, 255, 255, 0.15), transparent),
+    radial-gradient(1px 1px at 90px 40px, rgba(255, 255, 255, 0.25), transparent),
+    radial-gradient(1px 1px at 130px 80px, rgba(255, 255, 255, 0.2), transparent),
+    radial-gradient(2px 2px at 160px 30px, rgba(255, 255, 255, 0.15), transparent);
+  background-repeat: repeat;
+  background-size: 200px 100px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Main container */
+.companies-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  box-shadow: 
+    0 20px 40px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+  backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 10;
+  transform: translateZ(0);
+}
+
+/* Header Section */
+.companies-header {
+  background: linear-gradient(135deg, #00ddff83 0%, #00bbcccc 100%);
+  color: white;
+  padding: 40px;
+  text-align: center;
+  position: relative;
+}
+
+.companies-header h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin: 0 0 15px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.companies-header h1 i {
+  color: #2c3e50;
+}
+
+.companies-header p {
+  font-size: 1.2rem;
+  margin: 0 0 30px 0;
+  opacity: 0.9;
+}
+
+/* Search Filters */
+.search-filters {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-bar {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.input-group {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  min-width: 300px;
+}
+
+.input-group:focus-within {
+  border-color: #2c3e50;
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+  transform: translateY(-2px);
+}
+
+.input-group-text {
+  background: #f8f9fa;
+  border: none;
+  padding: 12px 15px;
+  color: #6c757d;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+}
+
+.form-control {
+  border: none;
+  padding: 12px 15px;
+  font-size: 1rem;
+  color: #495057;
+  background: transparent;
+  flex: 1;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: #adb5bd;
+}
+
+.btn-search {
+  background: #2c3e50;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-search:hover {
+  background: #34495e;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(44, 62, 80, 0.3);
+}
+
+/* Companies Content */
+.companies-content {
+  padding: 40px;
+}
+
+/* Stats Cards */
+.companies-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 1);
+  border-radius: 16px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+  animation: cardSlideIn 0.6s ease-out;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-5px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.stat-card i {
+  font-size: 2.5rem;
+  color: #00ddff83;
+}
+
+.stat-card h3 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0;
+  color: #2c3e50;
+}
+
+.stat-card p {
+  margin: 5px 0 0 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+/* Companies Grid */
+.companies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 25px;
+}
+
+.company-card {
+  background: rgba(255, 255, 255, 1);
+  border-radius: 20px;
+  padding: 30px;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  animation: cardSlideIn 0.6s ease-out;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.company-card:hover {
+  background: rgba(255, 255, 255, 1);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+}
+
+.company-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #00ddff83, #00bbcccc, #0099aa99);
+}
+
+@keyframes cardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Staggered animation for company cards */
+.company-card:nth-child(1) { animation-delay: 0.1s; }
+.company-card:nth-child(2) { animation-delay: 0.2s; }
+.company-card:nth-child(3) { animation-delay: 0.3s; }
+.company-card:nth-child(4) { animation-delay: 0.4s; }
+.company-card:nth-child(5) { animation-delay: 0.5s; }
+.company-card:nth-child(6) { animation-delay: 0.6s; }
+
+.company-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.company-logo {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #00ddff83, #00bbcccc);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+}
+
+.company-info h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  color: #2c3e50;
+}
+
+.company-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.company-meta span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.company-meta i {
+  color: #00ddff83;
+  font-size: 0.9rem;
+}
+
+.company-description {
+  margin-bottom: 20px;
+}
+
+.company-description p {
+  color: #6c757d;
+  line-height: 1.6;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.company-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.company-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  background: rgba(0, 221, 255, 0.1);
+  color: #00ddff83;
+  padding: 4px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 221, 255, 0.3);
+}
+
+.company-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* No Companies State */
+.no-companies {
+  text-align: center;
+  padding: 60px 20px;
+  color: #6c757d;
+}
+
+.no-companies i {
+  font-size: 4rem;
+  color: #00ddff83;
+  margin-bottom: 20px;
+  opacity: 0.5;
+}
+
+.no-companies h3 {
+  margin: 20px 0 10px 0;
+  color: #2c3e50;
+  font-size: 1.5rem;
+}
+
+.no-companies p {
+  margin: 0 0 30px 0;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Buttons */
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00ddff83 0%, #00bbcccc 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 221, 255, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 221, 255, 0.4);
+  animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 8px 25px rgba(0, 221, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(0, 221, 255, 0.6), 0 0 0 10px rgba(0, 221, 255, 0.1);
+  }
+  100% {
+    box-shadow: 0 8px 25px rgba(0, 221, 255, 0.4);
+  }
+}
+
+.btn-outline {
+  background: transparent;
+  color: #00ddff83;
+  border: 1px solid #00ddff83;
+}
+
+.btn-outline:hover {
+  background: #00ddff83;
+  color: white;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  min-width: auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .companies-page {
+    padding: 10px;
+  }
+  
+  .companies-header {
+    padding: 30px 20px;
+  }
+  
+  .companies-header h1 {
+    font-size: 2.5rem;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .search-bar {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .input-group {
+    min-width: 100%;
+    max-width: 300px;
+  }
+  
+  .companies-content {
+    padding: 20px;
+  }
+  
+  .companies-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .companies-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .company-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .company-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .btn {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .companies-header h1 {
+    font-size: 2rem;
+  }
+}
+
+body, .company-list {
+  background-color: #fff;
+}

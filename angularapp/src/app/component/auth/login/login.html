@@ -1,0 +1,69 @@
+<div class="login-page">
+  <div class="login-card">
+    <h2 class="text-center">Welcome Back</h2>
+    <p class="text-center text-muted">Login to your HireConnect account</p>
+
+    <!-- Role selection -->
+    <div class="mb-3">
+      <label class="form-label fw-bold">I am a:</label>
+      <div class="btn-group w-100">
+        <button type="button" class="btn" 
+                [class.active]="role === 'candidate'" 
+                (click)="role='candidate'">
+          <i class="bi bi-person-fill"></i> Candidate
+        </button>
+        <button type="button" class="btn" 
+                [class.active]="role === 'employer'" 
+                (click)="role='employer'">
+          <i class="bi bi-building"></i> Recruiter
+        </button>
+        <button type="button" class="btn" 
+                [class.active]="role === 'admin'" 
+                (click)="role='admin'">
+          <i class="bi bi-gear-fill"></i> Admin
+        </button>
+      </div>
+    </div>
+
+    <!-- Email -->
+    <div class="mb-3">
+      <label>Email Address</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-envelope-fill"></i></span>
+        <input type="email" [(ngModel)]="email" class="form-control" placeholder="Enter your email">
+      </div>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label>Password</label>
+      <div class="input-group">
+        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+        <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" class="form-control" placeholder="Enter your password">
+        <span class="input-group-text" (click)="togglePassword()" style="cursor:pointer">
+          <i class="bi" [ngClass]="showPassword ? 'bi-eye-slash' : 'bi-eye'"></i>
+        </span>
+      </div>
+    </div>
+
+    <!-- Remember me + Forgot -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <input type="checkbox" [(ngModel)]="remember" id="remember">
+        <label for="remember"> Remember me</label>
+      </div>
+      <a routerLink="/forgot-password" routerLinkActive="active">Forgot Password?</a>
+    </div>
+
+    <!-- Submit -->
+    <button class="btn btn-primary w-100" (click)="onSubmit()">
+      <i class="bi bi-box-arrow-in-right"></i> Login
+    </button>
+
+    <!-- Register -->
+    <p class="text-center mt-3">
+      Don't have an account? 
+      <a routerLink="/register" routerLinkActive="active" class="text-primary">Register</a>
+    </p>
+  </div>
+</div>

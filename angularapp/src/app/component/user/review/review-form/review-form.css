@@ -1,0 +1,55 @@
+body, .review-form {
+  background-color: #fff;
+}
+
+.review-form-container {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #00bbcc22;
+  padding: 2rem;
+  max-width: 600px;
+  min-width: 380px;
+  margin: 2rem auto 1rem auto;
+  text-align: left;
+}
+.review-form-container h3 {
+  margin-top: 0;
+  color: #00bbcc;
+  font-size: 1.3rem;
+  font-weight: 600;
+}
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 0.7rem;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 1rem;
+  margin-bottom: 0.2rem;
+}
+button[type="submit"] {
+  background: linear-gradient(135deg, #00bbcc, #0099aa);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.7rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+button[type="submit"]:hover:enabled {
+  background: linear-gradient(135deg, #0099aa, #00bbcc);
+}
+.success-msg {
+  color: #27ae60;
+  margin-top: 1rem;
+  font-weight: 500;
+}

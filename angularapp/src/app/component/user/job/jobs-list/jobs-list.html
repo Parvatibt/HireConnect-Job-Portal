@@ -1,0 +1,114 @@
+<div class="jobs-page">
+  <div class="jobs-container">
+    <!-- Header Section -->
+    <div class="jobs-header">
+      <h1><i class="bi bi-briefcase-fill"></i> Find Your Dream Job</h1>
+      <p>Discover amazing opportunities from top companies</p>
+      <div class="search-filters">
+        <div class="search-bar">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" placeholder="Search jobs, companies, skills..." class="form-control">
+          </div>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
+            <input type="text" placeholder="Location" class="form-control">
+          </div>
+          <button class="btn btn-search">
+            <i class="bi bi-search"></i> Search
+          </button>
+        </div>
+        <div class="filter-tags">
+          <span class="filter-tag active">All Jobs</span>
+          <span class="filter-tag">IT & Software</span>
+          <span class="filter-tag">Design</span>
+          <span class="filter-tag">Marketing</span>
+          <span class="filter-tag">Finance</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jobs List -->
+    <div class="jobs-content">
+      <div class="jobs-stats">
+        <div class="stat-card">
+          <i class="bi bi-briefcase"></i>
+          <div>
+            <h3>{{jobs.length}}</h3>
+            <p>Total Jobs</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="bi bi-building"></i>
+          <div>
+            <h3>{{getUniqueCompanies()}}</h3>
+            <p>Companies</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="bi bi-geo-alt"></i>
+          <div>
+            <h3>{{getUniqueLocations()}}</h3>
+            <p>Locations</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="jobs-list" *ngIf="jobs.length > 0; else noJobs">
+        <div class="job-card" *ngFor="let job of jobs; let i = index">
+          <div class="job-header">
+            <div class="job-title-section">
+              <h3>{{job.title}}</h3>
+              <div class="job-meta">
+                <span class="company">
+                  <i class="bi bi-building"></i>
+                  {{job.company}}
+                </span>
+                <span class="location">
+                  <i class="bi bi-geo-alt"></i>
+                  {{job.location}}
+                </span>
+                <span class="experience">
+                  <i class="bi bi-clock"></i>
+                  {{job.experience || '2-5 years'}}
+                </span>
+              </div>
+            </div>
+            <div class="job-actions">
+              <span class="category-badge">{{job.category}}</span>
+              <div class="action-buttons">
+                <button class="btn btn-outline btn-sm">
+                  <i class="bi bi-bookmark"></i> Save
+                </button>
+                <a [routerLink]="['/jobs', job.id]" class="btn btn-primary btn-sm">
+                  <i class="bi bi-eye"></i> View Details
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="job-description">
+            <p>{{job.description || 'Join our dynamic team and work on cutting-edge projects. We offer competitive salary, great benefits, and a collaborative work environment.'}}</p>
+          </div>
+          <div class="job-footer">
+            <div class="job-skills">
+              <span class="skill-tag" *ngFor="let skill of getJobSkills(job)">{{skill}}</span>
+            </div>
+            <div class="job-posted">
+              <i class="bi bi-calendar"></i>
+              Posted {{getRandomDays()}} days ago
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noJobs>
+        <div class="no-jobs">
+          <i class="bi bi-briefcase"></i>
+          <h3>No Jobs Found</h3>
+          <p>Try adjusting your search criteria or check back later for new opportunities.</p>
+          <button class="btn btn-primary">Browse All Jobs</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,146 @@
+<div class="candidate-profile-page">
+  <div class="profile-container">
+    <!-- Header Section -->
+    <div class="profile-header">
+      <div class="profile-picture-section">
+        <div class="profile-picture-container">
+          <img *ngIf="candidate.profilePicture; else defaultPic" [src]="candidate.profilePicture" alt="Profile Picture" class="profile-picture">
+          <ng-template #defaultPic>
+            <div class="profile-placeholder">
+              <i class="bi bi-person-circle"></i>
+              <span>Upload Photo</span>
+            </div>
+          </ng-template>
+          <div class="photo-upload">
+            <input type="file" id="photo-upload" (change)="onFileSelected($event, 'profilePicture')" accept="image/*" hidden>
+            <label for="photo-upload" class="upload-btn">
+              <i class="bi bi-camera"></i>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="candidate-info-header">
+        <h1>{{candidate.firstName || 'First Name'}} {{candidate.lastName || 'Last Name'}}</h1>
+        <p class="candidate-title">{{candidate.skills || 'Add your skills'}}</p>
+        <div class="candidate-stats">
+          <span class="stat-item">
+            <i class="bi bi-envelope"></i>
+            {{candidate.email || 'Email Address'}}
+          </span>
+          <span class="stat-item">
+            <i class="bi bi-file-earmark-pdf"></i>
+            {{candidate.resume ? 'Resume Uploaded' : 'No Resume'}}
+          </span>
+          <span class="stat-item">
+            <i class="bi bi-briefcase"></i>
+            {{applicationStatus.length}} Applications
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profile Form -->
+    <div class="profile-form-container">
+      <form (ngSubmit)="saveProfile()" class="profile-form">
+        <!-- Personal Information Card -->
+        <div class="form-card personal-card">
+          <div class="card-header">
+            <h3><i class="bi bi-person-badge"></i> Personal Information</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="firstName">First Name *</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" id="firstName" [(ngModel)]="candidate.firstName" name="firstName" class="form-control" placeholder="Enter your first name" required>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="lastName">Last Name *</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="bi bi-person"></i></span>
+                  <input type="text" id="lastName" [(ngModel)]="candidate.lastName" name="lastName" class="form-control" placeholder="Enter your last name" required>
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address *</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input type="email" id="email" [(ngModel)]="candidate.email" name="email" class="form-control" placeholder="Enter your email" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="skills">Skills & Expertise</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-tools"></i></span>
+                <input type="text" id="skills" [(ngModel)]="candidate.skills" name="skills" class="form-control" placeholder="e.g., Angular, Java, SQL, React">
+              </div>
+            </div>
+            <div class="card-actions">
+              <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
+                <i class="bi bi-x-circle"></i> Cancel
+              </button>
+              <button type="submit" class="btn btn-primary">
+                <i class="bi bi-check-circle"></i> Save Profile
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Resume Upload Card -->
+        <div class="form-card resume-card">
+          <div class="card-header">
+            <h3><i class="bi bi-file-earmark-pdf"></i> Resume & Documents</h3>
+          </div>
+          <div class="card-body">
+            <div class="resume-upload-area">
+              <div class="upload-zone" [class.has-file]="candidate.resume">
+                <i class="bi bi-cloud-upload"></i>
+                <h4>{{candidate.resume ? 'Resume Uploaded' : 'Upload Your Resume'}}</h4>
+                <p>{{candidate.resume ? candidate.resume.name : 'Drag & drop your resume here or click to browse'}}</p>
+                <input type="file" id="resume-upload" (change)="onFileSelected($event, 'resume')" accept=".pdf,.doc,.docx" hidden>
+                <label for="resume-upload" class="btn btn-upload">
+                  <i class="bi bi-plus-circle"></i> Choose File
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Applications Card -->
+        <div class="form-card applications-card">
+          <div class="card-header">
+            <h3><i class="bi bi-briefcase-fill"></i> My Job Applications</h3>
+          </div>
+          <div class="card-body">
+            <div class="applications-list" *ngIf="applicationStatus.length > 0; else noApplications">
+              <div class="application-item" *ngFor="let app of applicationStatus; let i = index">
+                <div class="application-header">
+                  <h4>{{app.jobTitle}}</h4>
+                  <span class="status-badge" [ngClass]="getStatusClass(app.status)">{{app.status}}</span>
+                </div>
+                <div class="application-details">
+                  <span class="applied-date">Applied 2 days ago</span>
+                  <div class="application-actions">
+                    <button class="btn btn-sm btn-outline">View Details</button>
+                    <button class="btn btn-sm btn-outline">Withdraw</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <ng-template #noApplications>
+              <div class="no-applications">
+                <i class="bi bi-briefcase"></i>
+                <h4>No Applications Yet</h4>
+                <p>Start applying to jobs to see your applications here.</p>
+                <button class="btn btn-primary">Browse Jobs</button>
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

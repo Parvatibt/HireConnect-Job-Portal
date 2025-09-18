@@ -1,0 +1,20 @@
+<app-admin-sidebar></app-admin-sidebar>
+<div class="admin-content-wrapper">
+  <div class="admin-content-card">
+    <h2>Manage Users</h2>
+    <table>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Role</th>
+        <th>Action</th>
+      </tr>
+      <tr *ngFor="let user of users">
+        <td>{{ user.id }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.role }}</td>
+        <td><button>Edit</button> <button>Delete</button></td>
+      </tr>
+    </table>
+  </div>
+</div>

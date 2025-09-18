@@ -1,0 +1,129 @@
+<div class="job-details-page">
+  <div class="job-details-container">
+    <!-- Header Section -->
+    <div class="job-details-header">
+      <div class="breadcrumb">
+        <a routerLink="/jobs" class="breadcrumb-link">Jobs</a>
+        <span class="breadcrumb-separator">></span>
+        <span class="breadcrumb-current">Job Details</span>
+      </div>
+    </div>
+
+    <!-- Job Information Card -->
+    <div class="job-info-card">
+      <div class="job-header">
+        <div class="job-title-section">
+          <h1>Senior Frontend Developer</h1>
+          <div class="job-meta">
+            <span class="company">
+              <i class="bi bi-building"></i>
+              TechCorp Solutions
+            </span>
+            <span class="location">
+              <i class="bi bi-geo-alt"></i>
+              Bangalore, India
+            </span>
+            <span class="experience">
+              <i class="bi bi-clock"></i>
+              3-5 years
+            </span>
+            <span class="salary">
+              <i class="bi bi-currency-rupee"></i>
+              ₹8-15 LPA
+            </span>
+          </div>
+        </div>
+        <div class="job-actions">
+          <span class="job-type">Full-time</span>
+          <span class="posted-date">Posted 2 days ago</span>
+          <div class="action-buttons">
+            <button class="btn btn-outline">
+              <i class="bi bi-bookmark"></i> Save Job
+            </button>
+            <button class="btn btn-primary" (click)="applyForJob()">
+              <i class="bi bi-send"></i> Apply Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Job Description Card -->
+    <div class="job-description-card">
+      <div class="card-header">
+        <h3><i class="bi bi-file-text"></i> Job Description</h3>
+      </div>
+      <div class="card-body">
+        <p>We are looking for a Senior Frontend Developer to join our dynamic team. You will be responsible for developing high-quality web applications using modern frontend technologies and working with cutting-edge frameworks.</p>
+        
+        <h4>Key Responsibilities:</h4>
+        <ul>
+          <li>Design and develop responsive web applications using Angular, React, or Vue.js</li>
+          <li>Collaborate with UI/UX designers to implement pixel-perfect designs</li>
+          <li>Write clean, maintainable, and efficient code</li>
+          <li>Participate in code reviews and technical discussions</li>
+          <li>Optimize applications for maximum speed and scalability</li>
+          <li>Work closely with backend developers to integrate APIs</li>
+        </ul>
+
+        <h4>Requirements:</h4>
+        <ul>
+          <li>Bachelor's degree in Computer Science or related field</li>
+          <li>3+ years of experience in frontend development</li>
+          <li>Proficiency in HTML5, CSS3, JavaScript (ES6+)</li>
+          <li>Experience with modern frontend frameworks (Angular, React, or Vue.js)</li>
+          <li>Knowledge of responsive design principles</li>
+          <li>Experience with version control systems (Git)</li>
+          <li>Strong problem-solving and communication skills</li>
+        </ul>
+
+        <h4>Preferred Qualifications:</h4>
+        <ul>
+          <li>Experience with TypeScript</li>
+          <li>Knowledge of testing frameworks (Jest, Jasmine)</li>
+          <li>Experience with build tools (Webpack, Vite)</li>
+          <li>Familiarity with design systems and component libraries</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Company Information Card -->
+    <div class="company-info-card">
+      <div class="card-header">
+        <h3><i class="bi bi-building"></i> About Company</h3>
+      </div>
+      <div class="card-body">
+        <div class="company-details">
+          <div class="company-logo">
+            <i class="bi bi-building"></i>
+          </div>
+          <div class="company-info">
+            <h4>TechCorp Solutions</h4>
+            <p>We are a leading technology company specializing in innovative software solutions. Our team of 500+ professionals works across multiple locations to deliver cutting-edge products to clients worldwide.</p>
+            <div class="company-meta">
+              <span><i class="bi bi-people"></i> 500+ Employees</span>
+              <span><i class="bi bi-geo-alt"></i> Multiple Locations</span>
+              <span><i class="bi bi-calendar"></i> Founded 2010</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Apply Now Section -->
+    <div class="apply-section">
+      <div class="apply-card">
+        <h3>Ready to Apply?</h3>
+        <p>Join our team and be part of something amazing. Click the button below to start your application process.</p>
+        <div class="apply-actions">
+          <a routerLink="/jobs" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Jobs
+          </a>
+          <button class="btn btn-primary btn-large" (click)="applyForJob()">
+            <i class="bi bi-send"></i> Apply for this Job
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

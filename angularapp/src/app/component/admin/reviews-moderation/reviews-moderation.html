@@ -1,0 +1,11 @@
+<app-admin-sidebar></app-admin-sidebar>
+<div class="admin-content-wrapper">
+  <div class="admin-content-card">
+    <h2>Reviews Moderation</h2>
+    <div *ngFor="let review of reviews" class="review">
+      <p>{{ review.content }}</p>
+      <button>Approve</button>
+      <button>Reject</button>
+    </div>
+  </div>
+</div>

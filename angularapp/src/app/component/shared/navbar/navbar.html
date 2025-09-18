@@ -1,0 +1,22 @@
+<nav class="navbar">
+  <!-- Left -->
+  <div class="nav-left">
+    <div class="logo">HireConnect</div>
+  </div>
+
+  <!-- Center -->
+  <div class="nav-center">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+    <a routerLink="/jobs" routerLinkActive="active">Jobs</a>    
+    <a routerLink="/companies" routerLinkActive="active">Companies</a>
+
+    <a routerLink="/candidate" routerLinkActive="active">Candidate</a>
+    <a routerLink="/recruiter" routerLinkActive="active">Recruiter</a>
+  </div>
+
+  <!-- Right -->
+  <ul class="nav-right">
+    <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
+    <li><a routerLink="/register" routerLinkActive="active">Register</a></li>
+  </ul>
+</nav>

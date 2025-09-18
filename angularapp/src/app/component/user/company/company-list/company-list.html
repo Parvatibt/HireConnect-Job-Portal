@@ -1,0 +1,95 @@
+<div class="companies-page">
+  <div class="companies-container">
+    <!-- Header Section -->
+    <div class="companies-header">
+      <h1><i class="bi bi-building"></i> Top Companies</h1>
+      <p>Discover amazing companies and their opportunities</p>
+      <div class="search-filters">
+        <div class="search-bar">
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" [(ngModel)]="searchTerm" placeholder="Search companies..." class="form-control">
+          </div>
+          <button class="btn btn-search">
+            <i class="bi bi-search"></i> Search
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Companies List -->
+    <div class="companies-content">
+      <div class="companies-stats">
+        <div class="stat-card">
+          <i class="bi bi-building"></i>
+          <div>
+            <h3>{{companies.length}}</h3>
+            <p>Total Companies</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="bi bi-briefcase"></i>
+          <div>
+            <h3>{{getTotalJobs()}}</h3>
+            <p>Open Positions</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <i class="bi bi-geo-alt"></i>
+          <div>
+            <h3>{{getUniqueLocations()}}</h3>
+            <p>Locations</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="companies-grid" *ngIf="filteredCompanies.length > 0; else noCompanies">
+        <div class="company-card" *ngFor="let company of filteredCompanies; let i = index">
+          <div class="company-header">
+            <div class="company-logo">
+              <i class="bi bi-building"></i>
+            </div>
+            <div class="company-info">
+              <h3>{{company.name}}</h3>
+              <div class="company-meta">
+                <span class="location">
+                  <i class="bi bi-geo-alt"></i>
+                  {{company.location}}
+                </span>
+                <span class="jobs-count">
+                  <i class="bi bi-briefcase"></i>
+                  {{company.jobs}} Open Jobs
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="company-description">
+            <p>{{company.description || 'Join our dynamic team and work on cutting-edge projects. We offer competitive benefits and a great work environment.'}}</p>
+          </div>
+          <div class="company-footer">
+            <div class="company-tags">
+              <span class="tag" *ngFor="let tag of getCompanyTags(company)">{{tag}}</span>
+            </div>
+            <div class="company-actions">
+              <button class="btn btn-outline btn-sm">
+                <i class="bi bi-eye"></i> View Jobs
+              </button>
+              <button class="btn btn-primary btn-sm">
+                <i class="bi bi-heart"></i> Follow
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ng-template #noCompanies>
+        <div class="no-companies">
+          <i class="bi bi-building"></i>
+          <h3>No Companies Found</h3>
+          <p>Try adjusting your search criteria or check back later for new companies.</p>
+          <button class="btn btn-primary">Browse All Companies</button>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+</div>

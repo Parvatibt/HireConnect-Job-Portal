@@ -1,0 +1,13 @@
+<app-admin-sidebar></app-admin-sidebar>
+<div class="admin-content-wrapper">
+  <div class="admin-content-card">
+    <h2>Manage Jobs</h2>
+    <ul>
+      <li *ngFor="let job of jobs">
+        {{ job.title }} - {{ job.company }} ({{ job.status }})
+        <button>Edit</button>
+        <button>Delete</button>
+      </li>
+    </ul>
+  </div>
+</div>

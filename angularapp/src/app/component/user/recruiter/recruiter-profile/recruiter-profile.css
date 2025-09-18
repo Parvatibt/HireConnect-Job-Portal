@@ -1,0 +1,800 @@
+/* Full-page background with image */
+.recruiter-profile-page {
+  min-height: 100vh;
+  width: 100%;
+  /* background-image removed */
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Set background color to white for recruiter-profile component */
+body, .recruiter-profile {
+  background-color: #000;
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Floating geometric shapes */
+.recruiter-profile-page::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-image removed */
+  pointer-events: none;
+  background: #000;
+}
+
+@keyframes floatShapes {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.7;
+  }
+  33% {
+    transform: translateY(-30px) rotate(120deg);
+    opacity: 0.4;
+  }
+  66% {
+    transform: translateY(20px) rotate(240deg);
+    opacity: 0.6;
+  }
+}
+
+/* Animated particles */
+.recruiter-profile-page::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* background-image removed */
+  pointer-events: none;
+  background: #000;
+}
+
+@keyframes particleFloat {
+  0% {
+    transform: translateY(0px) translateX(0px);
+  }
+  25% {
+    transform: translateY(-100px) translateX(50px);
+  }
+  50% {
+    transform: translateY(-200px) translateX(-25px);
+  }
+  75% {
+    transform: translateY(-300px) translateX(75px);
+  }
+  100% {
+    transform: translateY(-400px) translateX(0px);
+  }
+}
+
+/* Main container */
+.profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: #000;
+  color: #fff;
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+  animation: containerFloat 6s ease-in-out infinite;
+}
+
+@keyframes containerFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Header Section */
+.profile-header {
+  background: linear-gradient(135deg, #00ddff83 0%, #00bbcccc 100%);
+  color: white;
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  position: relative;
+}
+
+.profile-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* background removed */
+  opacity: 0.3;
+}
+
+.logo-container {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.company-logo {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.company-logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  border: 2px dashed rgba(255, 255, 255, 0.5);
+  transition: all 0.3s ease;
+}
+
+.logo-placeholder:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+.logo-placeholder i {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.logo-upload {
+  position: absolute;
+  bottom: -8px;
+  right: -8px;
+}
+
+.upload-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+  background: #45a049;
+  transform: scale(1.1);
+}
+
+.company-info-header {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.company-info-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: #2c3e50;
+}
+
+.company-tagline {
+  font-size: 1.1rem;
+  margin: 0 0 20px 0;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.company-stats {
+  display: flex;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.stat-item i {
+  font-size: 1.1rem;
+}
+
+/* Form Container */
+.profile-form-container {
+  padding: 40px;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Form Cards */
+.form-card {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(15px);
+  margin-bottom: 30px;
+  position: relative;
+  animation: cardSlideIn 0.6s ease-out;
+}
+
+@keyframes cardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.form-card:hover {
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.3);
+  transform: translateY(-8px) scale(1.02);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Staggered animation for cards */
+.form-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.form-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.form-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Specific Card Styles */
+.recruiter-card {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
+  border-left: 4px solid #4CAF50;
+  position: relative;
+}
+
+.recruiter-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(76, 175, 80, 0.1) 50%, transparent 70%);
+  animation: shimmer 3s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.company-card {
+  background: linear-gradient(135deg, rgba(255, 152, 0, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
+  border-left: 4px solid #FF9800;
+  position: relative;
+}
+
+.company-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(255, 152, 0, 0.1) 50%, transparent 70%);
+  animation: shimmer 3s ease-in-out infinite 1s;
+  pointer-events: none;
+}
+
+.job-roles-card {
+  background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(156, 39, 176, 0.05) 100%);
+  border-left: 4px solid #9C27B0;
+  position: relative;
+}
+
+.job-roles-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 30%, rgba(156, 39, 176, 0.1) 50%, transparent 70%);
+  animation: shimmer 3s ease-in-out infinite 2s;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.card-header {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 25px 30px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  backdrop-filter: blur(5px);
+}
+
+.card-header h3 {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-header i {
+  color: #667eea;
+  font-size: 1.2rem;
+}
+
+/* Job Roles Card Header */
+.job-roles-card .card-header {
+  background: linear-gradient(135deg, rgba(156, 39, 176, 0.1) 0%, rgba(156, 39, 176, 0.05) 100%);
+}
+
+.job-roles-card .card-header h3 i {
+  color: #9C27B0;
+}
+
+.card-body {
+  padding: 30px;
+}
+
+/* Form Layout */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+  margin-bottom: 5px;
+}
+
+/* Input Groups */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.input-group:focus-within {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.input-group-text {
+  background: #f8f9fa;
+  border: none;
+  padding: 12px 15px;
+  color: #6c757d;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 50px;
+}
+
+.form-control {
+  border: none;
+  padding: 12px 15px;
+  font-size: 1rem;
+  color: #495057;
+  background: transparent;
+  flex: 1;
+  outline: none;
+}
+
+.form-control::placeholder {
+  color: #adb5bd;
+}
+
+.form-control:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* Select styling */
+select.form-control {
+  cursor: pointer;
+  background: white;
+}
+
+/* Textarea */
+textarea.form-control {
+  resize: vertical;
+  min-height: 100px;
+  font-family: inherit;
+}
+
+/* Card Actions */
+.card-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  padding-top: 25px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+/* Action Buttons */
+.form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
+
+.btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  min-width: 120px;
+  justify-content: center;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #00ddff83 0%, #00bbcccc 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(0, 221, 255, 0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px rgba(0, 221, 255, 0.4);
+  animation: pulse 0.6s ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 8px 25px rgba(0, 221, 255, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(0, 221, 255, 0.6), 0 0 0 10px rgba(0, 221, 255, 0.1);
+  }
+  100% {
+    box-shadow: 0 8px 25px rgba(0, 221, 255, 0.4);
+  }
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: white;
+  box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+}
+
+/* Job Roles Specific Styles */
+.btn-add {
+  background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+  font-size: 0.9rem;
+  padding: 10px 20px;
+}
+
+.btn-add:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+}
+
+.btn-remove {
+  background: #dc3545;
+  color: white;
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+  padding: 8px 12px;
+  font-size: 0.8rem;
+  min-width: auto;
+}
+
+.btn-remove:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+}
+
+/* Job Roles List */
+.job-roles-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.job-role-item {
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  padding: 25px;
+  border: 1px solid rgba(156, 39, 176, 0.2);
+  transition: all 0.3s ease;
+}
+
+.job-role-item:hover {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 20px rgba(156, 39, 176, 0.1);
+}
+
+.job-role-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(156, 39, 176, 0.1);
+}
+
+.job-role-header h4 {
+  margin: 0;
+  color: #9C27B0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.no-job-roles {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6c757d;
+}
+
+.no-job-roles i {
+  font-size: 3rem;
+  color: #9C27B0;
+  margin-bottom: 15px;
+  opacity: 0.5;
+}
+
+.no-job-roles h4 {
+  margin: 15px 0 10px 0;
+  color: #495057;
+  font-size: 1.2rem;
+}
+
+.no-job-roles p {
+  margin: 0;
+  font-size: 0.95rem;
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .recruiter-profile-page {
+    padding: 10px;
+  }
+  
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+  }
+  
+  .company-info-header h1 {
+    font-size: 2rem;
+  }
+  
+  .company-stats {
+    justify-content: center;
+    gap: 20px;
+  }
+  
+  .profile-form-container {
+    padding: 20px;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .card-body {
+    padding: 20px;
+  }
+  
+  .form-actions,
+  .card-actions {
+    flex-direction: column;
+  }
+  
+  .btn {
+    width: 100%;
+  }
+  
+  .job-role-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .job-role-header h4 {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .company-info-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .company-stats {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .stat-item {
+    justify-content: center;
+  }
+}
+
+/* Additional floating elements */
+.recruiter-profile-page {
+  position: relative;
+}
+
+.recruiter-profile-page::before {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  width: 100px;
+  height: 100px;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-radius: 50%;
+  animation: floatCircle 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.recruiter-profile-page::after {
+  content: '';
+  position: absolute;
+  top: 60%;
+  right: 10%;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(45deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  border-radius: 50%;
+  animation: floatCircle 6s ease-in-out infinite reverse;
+  pointer-events: none;
+}
+
+@keyframes floatCircle {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-20px) rotate(180deg);
+    opacity: 0.3;
+  }
+}
+
+/* Input focus animations */
+.input-group:focus-within {
+  border-color: #00ddff83;
+  box-shadow: 
+    0 0 0 3px rgba(0, 221, 255, 0.1),
+    0 4px 15px rgba(0, 221, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+/* Job role item animations */
+.job-role-item {
+  animation: slideInUp 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading animation for better UX */
+.form-card {
+  animation: cardSlideIn 0.6s ease-out, fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
