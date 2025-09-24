@@ -1,0 +1,252 @@
+:root {
+  --navy: #1b2b3f;
+  --muted: #8f9aa6;
+  --card-w: 1000px;
+}
+
+/* Page wrapper */
+.page-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #e3f7ff0d;
+  padding: 20px;
+}
+
+
+/* Card container */
+.signup-card {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  min-height: 640px; /* change this or use height/min-height to make card taller */
+}
+
+/* LEFT (image with overlay) */
+.card-left {
+  flex: 1 1 50%;
+  background: url("/assets/sign-up.jpg") no-repeat center center/cover;
+  color: #fff;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  transition: background-size 10s linear;
+}
+
+/* Dark gradient for legibility */
+.card-left::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.18) 0%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Overlay content */
+.overlay {
+  position: relative;
+  z-index: 2;
+  padding: 32px;
+  max-width: 75%;
+  color: #fff;
+}
+
+/* Title and subtitle */
+.overlay h1 {
+  margin: 0 0 12px 0;
+  font-size: clamp(28px, 6vw, 48px);
+  font-weight: 800;
+  line-height: 1.05;
+  text-shadow: 0 6px 24px rgba(0,0,0,0.6);
+}
+.overlay-sub { /* optional class for subtitle */
+  margin: 0;
+  font-size: clamp(16px, 2vw, 18px);
+  opacity: 0.95;
+  text-shadow: 0 4px 16px rgba(0,0,0,0.45);
+}
+
+/* RIGHT (form) */
+.card-right {
+  flex: 1 1 50%;
+  background: #fff;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centers the form vertically in the right panel */
+}
+.role-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin: 15px 0 25px;
+}
+
+.role-label {
+  font-weight: 700;
+  font-size: 14px;
+  color: #1b2b3f; /* navy */
+  margin-right: 8px;
+}
+
+.role-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.role-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1.5px solid #ddd;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  color: #1b2b3f;
+}
+
+.role-btn .role-ico {
+  font-size: 16px;
+}
+
+.role-btn:hover {
+  border-color: #0077cc;
+}
+
+.role-btn.active {
+  border: 2px solid #0077cc;
+  background: #f0f8ff;
+  color: #0077cc;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+
+
+/* Titles on right */
+.login-title {
+  font-size: 20px;
+  margin: 6px 0 18px;
+  font-weight: 700;
+  color: var(--navy);
+  text-align: center;
+}
+
+/* Form layout */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+}
+
+.field-row {
+  display: flex;
+  gap: 12px;
+}
+.field { flex: 1; display:flex; flex-direction:column; }
+
+.field-label { font-size: 13px; font-weight:600; margin-bottom:6px; color:var(--navy); }
+
+.input {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  font-size: 14px;
+  outline:none;
+}
+.input:focus { box-shadow:0 8px 24px rgba(27,43,63,0.06); border-color: rgba(27,43,63,0.12); }
+
+/* Register button */
+.login-btn {
+  margin-top: 8px;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  color: #fff;
+  background: linear-gradient(180deg,#0077cc,#005fa3);
+  cursor:pointer;
+  box-shadow:0 8px 20px rgba(0,0,0,0.08);
+}
+.login-btn:hover { transform: translateY(-1px); }
+
+/* Signin link styling */
+.signin{
+  display:block;
+  text-align:center;
+  font-size:14px;
+  margin-top:12px;
+  color:#333;
+  text-decoration:none;
+  font-weight:500;
+}
+.signin span { color:#e60000; font-weight:900; font-size: medium; font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif; }
+
+
+/* ---------------------
+   Animation options
+   --------------------- */
+
+/* 1) Fade + slide up (staggered children) */
+.anim-fade-up .overlay > * {
+  opacity: 0;
+  transform: translateY(18px);
+  animation: fu-appear 600ms ease-out forwards;
+}
+.anim-fade-up .overlay > *:nth-child(1){ animation-delay: 120ms; } /* h1 */
+.anim-fade-up .overlay > *:nth-child(2){ animation-delay: 320ms; } /* p */
+@keyframes fu-appear {
+  to { opacity:1; transform: translateY(0); }
+}
+
+/* 2) Typewriter heading + fade subtitle */
+.anim-typewriter .overlay h1{
+  display:inline-block;
+  white-space:nowrap;
+  overflow:hidden;
+  border-right:.12em solid rgba(255,255,255,0.95); /* caret */
+  animation: typewriter 2s steps(30,end) 0.2s 1 both, blink-caret 700ms steps(1,end) infinite;
+}
+.anim-typewriter .overlay p{
+  opacity:0;
+  transform: translateY(8px);
+  animation: subtitle-fade 600ms ease-out 2.25s forwards;
+}
+@keyframes typewriter { from { width:0; } to { width:100%; } }
+@keyframes blink-caret { 50%{ border-color: transparent; } }
+@keyframes subtitle-fade { to { opacity:1; transform:translateY(0); } }
+
+/* 3) Ken Burns (slow background zoom) + floating overlay */
+.anim-kenburns {
+  background-position: center center;
+  background-size: 105%;
+  animation: kenburns-zoom 20s ease-in-out infinite alternate;
+}
+.anim-kenburns .overlay { animation: overlay-float 6s ease-in-out infinite; }
+@keyframes kenburns-zoom { from{ background-size:105%; } to{ background-size:120%; } }
+@keyframes overlay-float { 0%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } 100%{ transform:translateY(0); } }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .signup-card { flex-direction: column; min-height: auto; }
+  .card-left { min-height: 260px; align-items:flex-end; background-position:center; }
+  .overlay { padding: 20px; text-align:center; max-width: 92%; margin: 0 auto; }
+  .overlay h1 { font-size: clamp(22px, 7.5vw, 36px); }
+  .card-right { padding: 28px; }
+  .login-form { max-width: 100%; padding: 0 6px; }
+  .field-row { flex-direction: column; gap:10px; }
+}

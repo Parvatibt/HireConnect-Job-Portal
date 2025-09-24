@@ -1,22 +1,31 @@
-<nav class="navbar">
+<nav class="navbar" [class.transparent]="isTransparent">
   <!-- Left -->
   <div class="nav-left">
-    <div class="logo">HireConnect</div>
+    <div class="logo">
+      <span class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="35" fill="#0077cc" viewBox="0 0 24 24" style="vertical-align: middle;">
+          <path d="M3 17h2v2H3v-2zm4-4h2v6H7v-6zm4-4h2v10h-2V9zm4-4h2v14h-2V5zm4 
+                   8h2v6h-2v-6z"/>
+        </svg>
+      </span>
+      <span class="logo-text">
+        <span class="logo-hire">Hire</span><span class="logo-connect">Connect</span>
+      </span>
+    </div>
   </div>
 
   <!-- Center -->
   <div class="nav-center">
     <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-    <a routerLink="/jobs" routerLinkActive="active">Jobs</a>    
+    <a routerLink="/jobs" routerLinkActive="active">Jobs</a>
     <a routerLink="/companies" routerLinkActive="active">Companies</a>
-
     <a routerLink="/candidate" routerLinkActive="active">Candidate</a>
     <a routerLink="/recruiter" routerLinkActive="active">Recruiter</a>
   </div>
 
   <!-- Right -->
   <ul class="nav-right">
-    <li><a routerLink="/login" routerLinkActive="active">Login</a></li>
-    <li><a routerLink="/register" routerLinkActive="active">Register</a></li>
+    <li><a routerLink="/sign-in" routerLinkActive="active">Sign In</a></li>
+    <li><a routerLink="/sign-up" routerLinkActive="active">Sign Up</a></li>
   </ul>
 </nav>

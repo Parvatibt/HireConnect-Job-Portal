@@ -1,0 +1,96 @@
+<div class="page-wrap">
+
+  <!-- HERO: left text + angled right image -->
+  <section class="hero">
+    <div class="hero-left">
+      <h1 class="hero-title">Your dream Job</h1>
+  <h2 class="hero-sub" style="color: #ff5b62;">Is Near to You</h2>
+    </div>
+
+    <div class="hero-right">
+      <div class="hero-image"></div>
+    </div>
+  </section>
+
+  <!-- LOGIN CARD area -->
+  <section class="login-section" >
+    <h2 class="login-title" >WELCOME BACK! <span style="color: #185dc5;"> LOGIN HERE</span> </h2>
+    
+      <!-- Role selector -->
+    <div class="role-container">
+      <label class="role-label">I am a:</label>
+      <div class="role-buttons">
+        <button 
+          type="button" 
+          class="role-btn" 
+          [class.active]="role === 'candidate'" 
+          (click)="setRole('candidate')">
+          <span class="role-ico">👤</span>
+          <span>Candidate</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="role-btn" 
+          [class.active]="role === 'recruiter'" 
+          (click)="setRole('recruiter')">
+          <span class="role-ico">🏢</span>
+          <span>Recruiter</span>
+        </button>
+      </div>
+    </div>
+
+
+    <!-- Form -->
+    <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
+      <div class="field">
+        <label class="field-label">Username</label>
+        <div class="input-wrap">
+          <input
+            name="username"
+            class="input"
+            placeholder="Username"
+            [(ngModel)]="username"
+            required
+            #u="ngModel"
+          />
+          <span class="input-icon">👤</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Password</label>
+        <div class="input-wrap">
+          <input
+            name="password"
+            type="password"
+            class="input"
+            placeholder="Password"
+            [(ngModel)]="password"
+            required
+            #p="ngModel"
+          />
+          <span class="input-icon">🔒</span>
+        </div>
+      </div>
+
+      <div class="options-row">
+        <label class="remember">
+          <input type="checkbox" name="remember" [(ngModel)]="remember" />
+          <span>Save password</span>
+        </label>
+
+        <a class="forgot" href="/forgot-password">Forgot Password?</a>
+      </div>
+
+      <button class="btn-login" type="submit" [disabled]="!loginForm.form.valid">
+        LOGIN
+      </button>
+
+      <p class="signup">
+        Haven't Any Account Yet?
+        <a href="/sign-up" >Click Here</a>
+      </p>
+    </form>
+  </section>
+</div>

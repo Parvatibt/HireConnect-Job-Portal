@@ -1,0 +1,40 @@
+<div class="neon-page">
+  <div class="neon-wrap">
+    <!-- neon frame (pure CSS using pseudo elements) -->
+    <div class="neon-frame"></div>
+
+    <!-- circular logo overlapping top -->
+    <div class="logo-circle">
+      <img src="assets/admin-logo.jpg" alt="Admin Logo" />
+    </div>
+
+    <!-- card -->
+    <div class="login-card">
+      <h2 class="card-heading">Admin Login</h2>
+      <form (ngSubmit)="onLogin()" class="login-form" #f="ngForm">
+        <!-- Username (plain placeholder visible) -->
+        <input
+          name="username"
+          [(ngModel)]="username"
+          required
+          placeholder="Username"
+          autocomplete="username"
+          class="input"
+        />
+
+        <!-- Password (plain placeholder visible) -->
+        <input
+          name="password"
+          type="password"
+          [(ngModel)]="password"
+          required
+          placeholder="Password"
+          autocomplete="current-password"
+          class="input"
+        />
+
+        <button class="btn" type="submit">Login</button>
+      </form>
+    </div>
+  </div>
+</div>

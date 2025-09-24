@@ -1,0 +1,84 @@
+<div class="page-wrap">
+  <section class="signup-card">
+    <!-- LEFT: image with overlay text -->
+    <!-- add ONE of: anim-fade-up | anim-typewriter | anim-kenburns -->
+    <div class="card-left anim-kenburns">
+      <div class="overlay">
+        <h1>Your journey starts here.</h1>
+        <p class="overlay-sub" style="color:rgb(216, 35, 35)">Build your career passport with HireConnect.</p>
+        <a class="signin" href="/sign-in" style="color: aliceblue;" >Already have an Account? <span style="color:blue">Sign In</span></a>
+      </div>
+    </div>
+    
+    <!-- RIGHT: register form -->
+    <div class="card-right">
+      <h2 class="login-title" style="color:rgb(230, 27, 27); text-align:center;">WELCOME TO HIRECONNECT</h2>
+      <h2 class="login-title" style="text-align:center;">REGISTER HERE</h2>
+
+    <!-- Role selector -->
+    <div class="role-container">
+      <label class="role-label">I am a:</label>
+      <div class="role-buttons">
+        <button 
+          type="button" 
+          class="role-btn" 
+          [class.active]="role === 'candidate'" 
+          (click)="setRole('candidate')">
+          <span class="role-ico">👤</span>
+          <span>Candidate</span>
+        </button>
+
+        <button 
+          type="button" 
+          class="role-btn" 
+          [class.active]="role === 'recruiter'" 
+          (click)="setRole('recruiter')">
+          <span class="role-ico">🏢</span>
+          <span>Recruiter</span>
+        </button>
+      </div>
+    </div>
+
+
+
+      <form class="login-form" (ngSubmit)="onSubmit()" #signUpForm="ngForm" novalidate>
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">First Name</label>
+            <input name="firstName" class="input" [(ngModel)]="firstName" required placeholder="Enter your first name" />
+          </div>
+          <div class="field">
+            <label class="field-label">Last Name</label>
+            <input name="lastName" class="input" [(ngModel)]="lastName" required placeholder="Enter your last name" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Your Email</label>
+          <input name="email" type="email" class="input" [(ngModel)]="email" required placeholder="Enter your email address" />
+        </div>
+
+        <div class="field">
+          <label class="field-label">Phone Number</label>
+          <input name="phone" type="tel" class="input" [(ngModel)]="phone" required placeholder="Enter your phone number" />
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label class="field-label">Password</label>
+            <input name="password" type="password" class="input" [(ngModel)]="password" required placeholder="Enter your password" />
+          </div>
+          <div class="field">
+            <label class="field-label">Confirm Password</label>
+            <input name="confirmPassword" type="password" class="input" [(ngModel)]="confirmPassword" required placeholder="Re-enter your password" />
+          </div>
+        </div>
+
+        <button class="login-btn" type="submit">Register</button>
+
+        
+
+      </form>
+    </div>
+  </section>
+</div>

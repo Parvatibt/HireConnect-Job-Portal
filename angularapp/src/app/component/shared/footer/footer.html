@@ -1,0 +1,28 @@
+<!-- footer.html -->
+<!-- component hides itself via the `visible` flag -->
+<footer class="dashboard-footer" *ngIf="visible" role="contentinfo" aria-label="Site footer">
+  <div class="footer-inner">
+    <div class="logo-footer" aria-hidden="false">
+      <span class="logo-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" role="img" aria-label="HireConnect logo">
+          <path d="M3 17h2v2H3v-2zm4-4h2v6H7v-6zm4-4h2v10h-2V9zm4-4h2v14h-2V5zm4 
+                   8h2v6h-2v-6z"/>
+        </svg>
+      </span>
+
+      <span class="logo-text" aria-hidden="false">
+        <span class="logo-hire">Hire</span><span class="logo-connect">Connect</span>
+      </span>
+    </div>
+
+    <!-- Copyright directly under logo -->
+    <div class="footer-note" aria-hidden="false">&copy; 2025 HireConnect. All rights reserved.</div>
+
+    <!-- Right side navigation -->
+    <nav class="footer-nav" aria-label="Footer navigation">
+      <a href="#" title="About">About</a>
+      <a href="#" title="Contact">Contact</a>
+      <a href="#" title="Privacy">Privacy</a>
+    </nav>
+  </div>
+</footer>

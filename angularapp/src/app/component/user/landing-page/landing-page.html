@@ -1,0 +1,184 @@
+<!-- landing-page.html -->
+<!-- HERO (background image) -->
+<div class="landing-root">
+  <div class="overlay"></div>
+
+  <header class="hero" role="banner" aria-label="HireConnect hero">
+    <div class="hero-inner">
+      <!-- Left: Search block -->
+      <div class="search-block">
+        <h1 class="hero-title">Your dream job is just a search away</h1>
+        <p class="hero-sub">Discover companies that value your skills and passion.</p>
+
+        <form class="search-form" (ngSubmit)="onSearch()" autocomplete="off" role="search" aria-label="Job search">
+          <div class="input-wrap input-title">
+            <input
+              type="text"
+              name="title"
+              [(ngModel)]="query.title"
+              placeholder="Job title or company name"
+              aria-label="Job title or company"
+            />
+          </div>
+
+          <div class="input-wrap input-location">
+            <select name="location" [(ngModel)]="query.location" aria-label="Location">
+              <option value="">Location</option>
+              <option *ngFor="let l of locations" [value]="l">{{ l }}</option>
+            </select>
+          </div>
+
+          <div class="input-wrap input-category">
+            <select name="category" [(ngModel)]="query.category" aria-label="Category">
+              <option value="">Category</option>
+              <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+            </select>
+          </div>
+
+          <div class="input-wrap input-button">
+            <button type="submit" class="btn-search" aria-label="Search jobs">Search Job</button>
+          </div>
+        </form>
+
+        <div class="trending" aria-hidden="false">
+          <span class="trending-label">Trending Keywords:</span>
+          <div class="trending-list">
+            <button *ngFor="let t of trending" type="button" class="tag" (click)="query.title = t" aria-label="Use trending keyword">
+              {{ t }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: optional illustration / promo -->
+      <div class="hero-right" aria-hidden="true">
+        <!-- Illustration or image may go here if desired -->
+      </div>
+    </div>
+  </header>
+</div>
+
+<!-- BELOW HERO: sections on full-width gray background but centered content -->
+
+<!-- Features -->
+<section class="features" aria-labelledby="features-heading">
+  <div class="section-inner">
+    <h2 id="features-heading">Why Choose HireConnect?</h2>
+    <p>Join thousands of professionals who found their dream jobs with us</p>
+
+    <div class="features-grid" role="list">
+      <div class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">🔍</div>
+        <h3>Smart Job Search</h3>
+        <p>Advanced filters and AI-powered matching to find the perfect job for your skills and preferences.</p>
+      </div>
+
+      <div class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">🏢</div>
+        <h3>Top Companies</h3>
+        <p>Connect with leading companies and startups across various industries and locations.</p>
+      </div>
+
+      <div class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">✅</div>
+        <h3>Verified Jobs</h3>
+        <p>All job postings are verified to ensure authenticity and prevent fraudulent listings.</p>
+      </div>
+
+      <div class="feature-card" role="listitem">
+        <div class="feature-icon" aria-hidden="true">👥</div>
+        <h3>Expert Support</h3>
+        <p>Get personalized career guidance and application tips from our team of experts.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Statistics -->
+<section class="stats" aria-labelledby="stats-heading">
+  <div class="section-inner">
+    <div class="stats-container" id="stats-heading" role="list">
+      <div class="stat-item" role="listitem">
+        <h3>5K+</h3>
+        <p>Active Jobs</p>
+      </div>
+      <div class="stat-item" role="listitem">
+        <h3>1K+</h3>
+        <p>Companies</p>
+      </div>
+      <div class="stat-item" role="listitem">
+        <h3>1K+</h3>
+        <p>Job Seekers</p>
+      </div>
+      <div class="stat-item" role="listitem">
+        <h3>95%</h3>
+        <p>Success Rate</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call To Action -->
+<section class="cta" role="region" aria-labelledby="cta-heading">
+  <div class="section-inner cta-content">
+    <div>
+      <h2 id="cta-heading">Ready to Start Your Journey?</h2>
+      <p>Join thousands of professionals who have already found their dream jobs through HireConnect</p>
+    </div>
+
+    <div class="cta-buttons" role="group" aria-label="Call to action buttons">
+      <a routerLink="/jobs" class="btn btn-primary" aria-label="Browse jobs">Browse Jobs</a>
+      <a routerLink="/companies" class="btn btn-outline" aria-label="View companies">View Companies</a>
+    </div>
+  </div>
+</section>
+
+
+<!-- Reviews (separate section, not in footer) -->
+<section class="reviews" aria-labelledby="reviews-heading">
+  <div class="section-inner">
+    <h2 id="reviews-heading">What People Say</h2>
+    <p>Real feedback from professionals who found opportunities with HireConnect</p>
+
+    <div class="reviews-grid">
+      <div class="review-card">
+        <p class="review-text">“Found my dream role in two weeks — the process was smooth and recruiters were responsive.”</p>
+        <div class="review-meta">— Sarah J., Product Designer</div>
+      </div>
+
+      <div class="review-card">
+        <p class="review-text">“Great candidates and fast hiring pipeline. We hired two engineers in a month.”</p>
+        <div class="review-meta">— Acme Corp (Hiring Manager)</div>
+      </div>
+
+      <div class="review-card">
+        <p class="review-text">“The platform helped me showcase my portfolio and connect with the right companies.”</p>
+        <div class="review-meta">— Daniel K., Frontend Developer</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<section class="feedback">
+  <div class="section-inner feedback-content">
+    <!-- Left side -->
+    <div class="feedback-left">
+      <h2>We’d love your feedback</h2>
+      <p>Your suggestions help us improve HireConnect for everyone. Share your experience or suggest improvements.</p>
+      <div class="feedback-buttons">
+        <a routerLink="/review-form" class="btn btn-primary">Leave Feedback</a>
+        <a routerLink="/review-list" class="btn btn-outline">View Reviews</a>
+      </div>
+    </div>
+
+    <!-- Right side -->
+    <div class="feedback-right">
+      <h3>Recent feedback</h3>
+      <p>“Quick hiring process — great experience.” — Anna P.</p>
+      <p>“Better filters would help, overall great.” — Marcus T.</p>
+      <p>“Found a role within 2 weeks.” — Lina R.</p>
+      <a routerLink="/review-list">See all reviews for more feedback.</a>
+    </div>
+  </div>
+</section>

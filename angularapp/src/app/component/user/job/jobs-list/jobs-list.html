@@ -1,114 +1,101 @@
-<div class="jobs-page">
-  <div class="jobs-container">
-    <!-- Header Section -->
-    <div class="jobs-header">
-      <h1><i class="bi bi-briefcase-fill"></i> Find Your Dream Job</h1>
-      <p>Discover amazing opportunities from top companies</p>
-      <div class="search-filters">
-        <div class="search-bar">
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input type="text" placeholder="Search jobs, companies, skills..." class="form-control">
-          </div>
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-            <input type="text" placeholder="Location" class="form-control">
-          </div>
-          <button class="btn btn-search">
-            <i class="bi bi-search"></i> Search
-          </button>
-        </div>
-        <div class="filter-tags">
-          <span class="filter-tag active">All Jobs</span>
-          <span class="filter-tag">IT & Software</span>
-          <span class="filter-tag">Design</span>
-          <span class="filter-tag">Marketing</span>
-          <span class="filter-tag">Finance</span>
-        </div>
-      </div>
+<!-- HERO up-to-search -->
+<div class="jobs-hero" role="region" aria-label="Jobs hero">
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="hero-copy">
+      <h1 class="hero-title">Find your next role</h1>
+      <p class="hero-sub">Search thousands of jobs — filter by location, category and job type.</p>
+      <p class="hero-extra">Your skills deserve the perfect stage, let’s find it together</p>
     </div>
 
-    <!-- Jobs List -->
-    <div class="jobs-content">
-      <div class="jobs-stats">
-        <div class="stat-card">
-          <i class="bi bi-briefcase"></i>
-          <div>
-            <h3>{{jobs.length}}</h3>
-            <p>Total Jobs</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <i class="bi bi-building"></i>
-          <div>
-            <h3>{{getUniqueCompanies()}}</h3>
-            <p>Companies</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <i class="bi bi-geo-alt"></i>
-          <div>
-            <h3>{{getUniqueLocations()}}</h3>
-            <p>Locations</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="jobs-list" *ngIf="jobs.length > 0; else noJobs">
-        <div class="job-card" *ngFor="let job of jobs; let i = index">
-          <div class="job-header">
-            <div class="job-title-section">
-              <h3>{{job.title}}</h3>
-              <div class="job-meta">
-                <span class="company">
-                  <i class="bi bi-building"></i>
-                  {{job.company}}
-                </span>
-                <span class="location">
-                  <i class="bi bi-geo-alt"></i>
-                  {{job.location}}
-                </span>
-                <span class="experience">
-                  <i class="bi bi-clock"></i>
-                  {{job.experience || '2-5 years'}}
-                </span>
-              </div>
-            </div>
-            <div class="job-actions">
-              <span class="category-badge">{{job.category}}</span>
-              <div class="action-buttons">
-                <button class="btn btn-outline btn-sm">
-                  <i class="bi bi-bookmark"></i> Save
-                </button>
-                <a [routerLink]="['/jobs', job.id]" class="btn btn-primary btn-sm">
-                  <i class="bi bi-eye"></i> View Details
-                </a>
-              </div>
-            </div>
-          </div>
-          <div class="job-description">
-            <p>{{job.description || 'Join our dynamic team and work on cutting-edge projects. We offer competitive salary, great benefits, and a collaborative work environment.'}}</p>
-          </div>
-          <div class="job-footer">
-            <div class="job-skills">
-              <span class="skill-tag" *ngFor="let skill of getJobSkills(job)">{{skill}}</span>
-            </div>
-            <div class="job-posted">
-              <i class="bi bi-calendar"></i>
-              Posted {{getRandomDays()}} days ago
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <ng-template #noJobs>
-        <div class="no-jobs">
-          <i class="bi bi-briefcase"></i>
-          <h3>No Jobs Found</h3>
-          <p>Try adjusting your search criteria or check back later for new opportunities.</p>
-          <button class="btn btn-primary">Browse All Jobs</button>
-        </div>
-      </ng-template>
-    </div>
+    <form class="hero-search" (ngSubmit)="onSearch()" role="search" aria-label="Job search">
+      <input
+        type="text"
+        name="title"
+        [(ngModel)]="query.title"
+        placeholder="Job title or company"
+        aria-label="Job title or company"
+      />
+      <button class="btn-search" type="submit" aria-label="Search jobs">Search</button>
+    </form>
   </div>
+</div>
+
+<div class="background">
+<!-- Main layout: sidebar + job list -->
+<div class="jobs-content">
+  <aside class="sidebar" aria-label="Job filters">
+    <h3>Filters</h3>
+
+    <div class="filter-block">
+      <h4>Category</h4>
+      <ul class="filter-list">
+        <li *ngFor="let c of categories">
+          <label>
+            <input type="checkbox" (change)="toggleCategory(c)" />
+            <span>{{ c }}</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <div class="filter-block">
+      <h4>Location</h4>
+      <ul class="filter-list">
+        <li *ngFor="let l of locations">
+          <label>
+            <input type="checkbox" (change)="toggleLocation(l)" />
+            <span>{{ l }}</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+
+    <div class="filter-block">
+      <h4>Job Type</h4>
+      <ul class="filter-list">
+        <li *ngFor="let t of jobTypes">
+          <label>
+            <input type="checkbox" (change)="toggleJobType(t)" />
+            <span>{{ t }}</span>
+          </label>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <main class="job-list" aria-live="polite">
+    <div class="list-header">
+      <h2>Jobs</h2>
+      <div class="results-count">{{ filteredJobs.length }} result{{ filteredJobs.length === 1 ? '' : 's' }}</div>
+    </div>
+
+    <div *ngIf="filteredJobs.length === 0" class="no-results">
+      No jobs found — try different filters or search terms.
+    </div>
+
+    <div class="cards">
+      <article class="job-card" *ngFor="let job of filteredJobs">
+  <!-- left: title + meta + description -->
+  <div class="job-card-left">
+    <div class="job-head">
+      <h3 class="job-title">{{ job.title }}</h3>
+      <div class="job-meta">{{ job.company }} · {{ job.location }}</div>
+    </div>
+
+    <p class="job-desc">{{ job.shortDescription }}</p>
+  </div>
+
+  <!-- right: actions -->
+  <div class="job-card-right">
+    <a class="btn-view" [routerLink]="['/jobs', job.id]" title="View details for {{ job.title }}">
+      View Details
+    </a>
+  </div>
+</article>
+
+    </div>
+  </main>
+</div>
 </div>

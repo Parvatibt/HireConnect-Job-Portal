@@ -1,0 +1,410 @@
+/* landing-page.css
+   Full landing page CSS:
+   - page background set to grey (#CFCFCF)
+   - hero keeps its background image
+   - CTA & Feedback are transparent (no white card)
+   - Feature / Stat / Review cards remain white (kept visually card-like)
+*/
+
+/* ========== Root & page background ========== */
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: #a8a8ab; /* let html/body color show through */
+}
+
+/* page-wide grey background (apply globally) */
+html, body, app-root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #a8a8ab;         /* your chosen grey page background */
+  color: #111;
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========== HERO (full-viewport with image) ========== */
+.landing-root {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;              /* hero fills viewport */
+  display: flex;
+  align-items: center;
+  background: url('/assets/landing-page-bg.jpg') no-repeat;
+  background-size: cover;
+  background-position: center 20%;
+  overflow: hidden;
+}
+
+/* hero overlay to darken image a bit for readability */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.32), rgba(0,0,0,0.32));
+  z-index: 0;
+}
+
+/* hero container */
+.hero {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 48px 24px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* centered inner content constraint */
+.hero-inner {
+  display: flex;
+  gap: 48px;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* left search block */
+.search-block {
+  flex: 0 0 650px;
+  display:flex;
+  flex-direction: column;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+/* hero headings */
+.hero-title {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.12;
+  margin: 0 0 8px 0;
+  color: #fff; /* white on hero image */
+  text-shadow: 0 2px 14px rgba(0,0,0,0.55);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 900ms ease-out forwards;
+}
+.hero-sub {
+  font-size: 18px;
+  margin: 0 0 18px 0;
+  color: rgba(255,255,255,0.88);
+  opacity: 0;
+  transform: translateY(10px);
+  animation: fadeUp 900ms ease-out forwards;
+  animation-delay: 0.18s;
+}
+
+/* search form layout */
+.search-form {
+  display:flex;
+  align-items:center;
+  gap: 12px;
+  width: 100%;
+}
+.input-wrap { display:block; }
+.input-title { flex: 1 1 320px; }
+.input-location, .input-category { flex: 0 0 150px; }
+.input-button { flex: 0 0 auto; }
+
+.search-form input[type="text"],
+.search-form select {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: 6px;
+  border: none;
+  box-shadow: 0 2px 10px rgba(10,10,10,0.12);
+  background: rgba(255,255,255,0.95);
+  color: #111;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.btn-search {
+  padding: 12px 22px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #2f7cff, #1f5fe6);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(47,124,255,0.16);
+}
+
+.trending { display:flex; align-items:center; gap: 12px; width:100%; flex-wrap:wrap; }
+.trending-label { color: rgba(255,255,255,0.88); font-weight:600; margin-right:6px; white-space:nowrap; }
+.tag { background: rgba(255,255,255,0.12); color: #fff; border: none; padding: 6px 10px; border-radius: 999px; font-size: 13px; cursor: pointer; }
+
+/* hero animation keyframes */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ========== BELOW HERO: sections (transparent so page grey shows) ========== */
+/* Sections are full-width; content is centered using .section-inner */
+/* We intentionally leave feature/stat/review cards white to stand out on grey. */
+
+.features,
+.stats,
+.cta,
+.reviews,
+.feedback {
+  background: transparent;   /* use page background (grey) */
+  color: #111;
+  position: relative;
+  z-index: 1;
+}
+
+/* section inner: centers content horizontally */
+.section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: calc(100% - 48px);
+  box-sizing: border-box;
+}
+
+/* ---------- Features ---------- */
+.features { padding: 56px 0; }
+.features .section-inner { padding: 0 24px; }
+.features > .section-inner > h2 {
+  margin: 0 0 8px 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111;
+}
+.features > .section-inner > p {
+  margin: 0 0 28px 0;
+  color: #333;
+  font-size: 15px;
+}
+
+/* features grid */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  align-items: stretch;
+}
+
+/* keep feature cards white (so they read on the grey background) */
+.feature-card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 22px;
+  box-shadow: 0 8px 18px rgba(14,14,14,0.04);
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 160px;
+}
+
+/* feature icon style */
+.feature-icon {
+  display:inline-flex;
+  width:44px;
+  height:44px;
+  align-items:center;
+  justify-content:center;
+  border-radius:10px;
+  font-size:20px;
+  color:#fff;
+  background: #0077cc;
+  box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+}
+.feature-card h3 { margin:0; font-size:18px; font-weight:700; color:#111; }
+.feature-card p { margin:0; color:#555; font-size:14px; line-height:1.45; flex:1; }
+.feature-card:hover { transform: translateY(-6px); transition: transform .18s ease; }
+
+/* ---------- Stats ---------- */
+.stats { padding: 36px 0 56px; }
+.stats .section-inner { padding: 0 24px; }
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+/* keep stat boxes white */
+.stat-item {
+  background: #fff;
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  color: #111;
+  box-shadow: 0 8px 18px rgba(14,14,14,0.04);
+  transition: transform .15s ease;
+}
+.stat-item h3 { margin: 0 0 6px 0; font-size: 26px; font-weight: 800; color: #111; }
+.stat-item p { margin:0; color: #666; font-size:13px; }
+.stat-item:hover { transform: translateY(-6px); }
+
+/* ---------- CTA (transparent, centered) ---------- */
+.cta {
+  padding: 80px 0;                 /* spacing */
+  background: transparent;         /* no white box */
+}
+
+.cta .section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: calc(100% - 48px);
+  text-align: center;
+}
+
+.cta-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* CTA heading and subtext */
+.cta-content h2 {
+  margin: 0;
+  font-size: 28px;
+  color: #0b254d;
+  font-weight: 800;
+}
+.cta-content p {
+  margin: 8px 0 0;
+  color: #333;
+  font-size: 16px;
+}
+
+/* Buttons */
+.cta-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+}
+.btn-primary {
+  background: linear-gradient(180deg,#2f7cff,#1f5fe6);
+  color: #fff;
+  border: none;
+  box-shadow: 0 10px 28px rgba(47,124,255,0.10);
+}
+.btn-outline {
+  background: transparent;
+  border: 1px solid #dcdcdc;
+  color: #0b254d;
+}
+
+/* ---------- Reviews (white cards) ---------- */
+.reviews { padding: 56px 0; }
+.reviews .section-inner { padding: 0 24px; }
+.reviews > .section-inner > h2 { margin: 0 0 8px 0; font-size: 26px; font-weight: 800; color: #111; }
+.reviews > .section-inner > p { margin: 0 0 22px 0; color: #333; }
+
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+.review-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 8px 20px rgba(14,14,14,0.05);
+  border: 1px solid #eee;
+}
+.review-text { margin: 0 0 12px 0; color: #333; font-size: 15px; line-height: 1.5; }
+.review-meta { font-size: 13px; color: #777; }
+
+/* ---------- Feedback (transparent: NO white) ---------- */
+.feedback {
+  padding: 80px 0;
+  background: transparent !important; /* force no white box */
+}
+
+/* ensure inner containers are transparent */
+.feedback .section-inner,
+.feedback-content,
+.feedback-left,
+.feedback-right {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* layout for feedback */
+.feedback .section-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: calc(100% - 48px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 40px;
+}
+
+/* left side */
+.feedback-left { flex: 1; min-width: 280px; }
+.feedback-left h2 { margin: 0 0 12px 0; font-size: 26px; font-weight: 800; color: #111; }
+.feedback-left p { margin: 0 0 18px 0; color: #333; font-size: 16px; }
+
+/* buttons */
+.feedback-buttons { display:flex; gap:12px; flex-wrap:wrap; }
+.feedback-buttons .btn { padding: 12px 20px; border-radius:10px; font-weight:700; text-decoration:none; }
+.feedback-buttons .btn-primary { background: linear-gradient(180deg,#2f7cff,#1f5fe6); color:#fff; border:none; }
+.feedback-buttons .btn-outline { background: transparent; border:1px solid #dcdcdc; color:#0b254d; }
+
+/* right side */
+.feedback-right { flex: 1; min-width: 280px; }
+.feedback-right h3 { font-size: 20px; margin-bottom: 12px; color: #111; }
+.feedback-right p { margin: 0 0 10px 0; font-size: 15px; color: #444; }
+.feedback-right a { display:inline-block; margin-top:8px; font-size:14px; color:#2f7cff; text-decoration:none; font-weight:600; }
+
+
+
+/* ========== Responsive tweaks ========== */
+@media (max-width: 1024px) {
+  .hero-inner { gap: 24px; }
+  .search-block { flex: 0 0 56%; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .reviews-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 820px) {
+  .landing-root { background-position: center center; background-attachment: scroll; min-height: 60vh; }
+  .hero { padding: 28px; justify-content: center; }
+  .hero-inner { flex-direction: column; gap: 20px; align-items: stretch; }
+  .search-block { width: 100%; flex: none; }
+  .search-form { flex-direction: column; gap: 12px; }
+  .input-location, .input-category { width: 100%; flex: none; }
+  .input-button { width: 100%; }
+  .btn-search { width: 100%; display: block; }
+  .hero-right { display: none; }
+  .feedback .section-inner { flex-direction: column; align-items: center; text-align: center; }
+  .feedback-right { text-align: center; }
+}
+@media (max-width: 520px) {
+  .hero-title { font-size: 22px; }
+  .hero-sub { font-size: 14px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .feature-card { padding: 16px; }
+}

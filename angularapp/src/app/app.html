@@ -1,12 +1,15 @@
 <!-- Show normal navbar only outside admin routes -->
-<ng-container *ngIf="!isAdminRoute()">
+<ng-container *ngIf="!isAdminRoute() && !isResetPasswordRoute()">
   <app-navbar></app-navbar>
 </ng-container>
 
 <!-- Show sidebar only inside admin routes -->
 <ng-container *ngIf="isAdminRoute()">
-  <app-admin-sidebar></app-admin-sidebar>
+  <app-admin-sidebar *ngIf="!isLoginPage()"></app-admin-sidebar>
 </ng-container>
 
 <!-- Main outlet -->
 <router-outlet></router-outlet>
+
+<!-- footer component -->
+<app-footer></app-footer>
