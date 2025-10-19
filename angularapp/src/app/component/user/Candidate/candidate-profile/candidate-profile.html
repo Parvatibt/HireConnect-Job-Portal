@@ -1,146 +1,159 @@
-<div class="candidate-profile-page">
-  <div class="profile-container">
-    <!-- Header Section -->
-    <div class="profile-header">
-      <div class="profile-picture-section">
-        <div class="profile-picture-container">
-          <img *ngIf="candidate.profilePicture; else defaultPic" [src]="candidate.profilePicture" alt="Profile Picture" class="profile-picture">
-          <ng-template #defaultPic>
-            <div class="profile-placeholder">
-              <i class="bi bi-person-circle"></i>
-              <span>Upload Photo</span>
-            </div>
-          </ng-template>
-          <div class="photo-upload">
-            <input type="file" id="photo-upload" (change)="onFileSelected($event, 'profilePicture')" accept="image/*" hidden>
-            <label for="photo-upload" class="upload-btn">
-              <i class="bi bi-camera"></i>
-            </label>
-          </div>
+<div class="container my-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10">
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h2 class="mb-0">Your Profile</h2>
+        <div class="d-flex gap-2">
+          <a class="btn btn-outline-primary" routerLink="/jobs">Browse Jobs</a>
+          <a class="btn btn-primary" routerLink="/candidate/onboarding">Edit Profile</a>
         </div>
       </div>
-      <div class="candidate-info-header">
-        <h1>{{candidate.firstName || 'First Name'}} {{candidate.lastName || 'Last Name'}}</h1>
-        <p class="candidate-title">{{candidate.skills || 'Add your skills'}}</p>
-        <div class="candidate-stats">
-          <span class="stat-item">
-            <i class="bi bi-envelope"></i>
-            {{candidate.email || 'Email Address'}}
-          </span>
-          <span class="stat-item">
-            <i class="bi bi-file-earmark-pdf"></i>
-            {{candidate.resume ? 'Resume Uploaded' : 'No Resume'}}
-          </span>
-          <span class="stat-item">
-            <i class="bi bi-briefcase"></i>
-            {{applicationStatus.length}} Applications
-          </span>
-        </div>
-      </div>
-    </div>
 
-    <!-- Profile Form -->
-    <div class="profile-form-container">
-      <form (ngSubmit)="saveProfile()" class="profile-form">
-        <!-- Personal Information Card -->
-        <div class="form-card personal-card">
-          <div class="card-header">
-            <h3><i class="bi bi-person-badge"></i> Personal Information</h3>
-          </div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="firstName">First Name *</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-person"></i></span>
-                  <input type="text" id="firstName" [(ngModel)]="candidate.firstName" name="firstName" class="form-control" placeholder="Enter your first name" required>
+      <!-- Error -->
+      <div *ngIf="!loading && error" class="alert alert-danger">{{ error }}</div>
+
+      <div *ngIf="!loading && !error" class="row g-4">
+        <!-- Sidebar -->
+        <div class="col-12 col-md-4">
+          <div class="card shadow-sm sticky-md-top sidebar-card">
+            <div class="card-body">
+              <div class="d-flex align-items-center gap-3 mb-3">
+                <div class="avatar bg-primary text-white">
+                  {{ (profile?.fullName || profile?.username || 'U') | slice:0:1 }}
+                </div>
+                <div>
+                  <h5 class="mb-0">{{ profile?.fullName || profile?.username }}</h5>
+                  <small class="text-muted">{{ profile?.email }}</small>
                 </div>
               </div>
-              <div class="form-group">
-                <label for="lastName">Last Name *</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-person"></i></span>
-                  <input type="text" id="lastName" [(ngModel)]="candidate.lastName" name="lastName" class="form-control" placeholder="Enter your last name" required>
+
+              <!-- Headline & Skills -->
+              <div class="mb-3 profile-summary">
+                <p class="mb-1">
+                  <span class="text-muted">Headline:</span>
+                  <span class="ms-1">{{ profile?.headline || '—' }}</span>
+                </p>
+                <p class="mb-0">
+                  <span class="text-muted">Skills:</span>
+                  <span class="ms-1">{{ profile?.skills || '—' }}</span>
+                </p>
+              </div>
+
+              <ul class="list-unstyled small mb-3 personal-meta">
+                <li class="mb-1">
+                  <span class="text-muted">Phone:</span>
+                  <span class="ms-1">{{ profile?.phone || '—' }}</span>
+                </li>
+                <li class="mb-1">
+                  <span class="text-muted">Location:</span>
+                  <span class="ms-1">{{ profile?.location || '—' }}</span>
+                </li>
+                <li class="mb-1">
+                  <span class="text-muted">Pin / Postal:</span>
+                  <span class="ms-1">{{ profile?.pinCode || '—' }}</span>
+                </li>
+              </ul>
+
+              <!-- Resume status + actions -->
+              <div class="mb-3 resume-actions">
+                <div class="mb-2">
+                  <span class="resume-badge"
+                        [ngClass]="profile?.resumeUrl ? 'has-resume' : 'no-resume'">
+                    {{ profile?.resumeUrl ? 'Resume uploaded' : 'No resume uploaded' }}
+                  </span>
                 </div>
+
+                <div class="d-flex gap-2 flex-wrap">
+                  <ng-container *ngIf="profile?.resumeUrl; else noView">
+                    <a class="btn btn-outline-action btn-sm"
+                       [href]="profile?.resumeUrl"
+                       target="_blank"
+                       rel="noopener">
+                      View Resume
+                    </a>
+                  </ng-container>
+                  <ng-template #noView>
+                    <button class="btn btn-outline-action btn-sm" disabled>View Resume</button>
+                  </ng-template>
+
+                  <label class="btn btn-outline-action btn-sm mb-0" for="resumeInputSidebar" [class.disabled]="uploading">
+                    {{ uploading ? 'Uploading…' : (profile?.resumeUrl ? 'Update Resume' : 'Upload Resume') }}
+                  </label>
+                  <input
+                    id="resumeInputSidebar"
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    (change)="onResumeFileSelected($event)"
+                    style="display:none"
+                    [disabled]="uploading"
+                  />
+                </div>
+
+                <div *ngIf="uploading" class="mt-2 small text-muted">
+                  <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                  Uploading…
+                </div>
+                <div *ngIf="uploadError" class="mt-2 text-danger small">{{ uploadError }}</div>
+                <div *ngIf="uploadSuccess" class="mt-2 text-success small">Resume uploaded successfully.</div>
               </div>
-            </div>
-            <div class="form-group">
-              <label for="email">Email Address *</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                <input type="email" id="email" [(ngModel)]="candidate.email" name="email" class="form-control" placeholder="Enter your email" required>
+
+              <div class="d-grid gap-2">
+                <!--<a class="btn btn-primary" routerLink="/jobs">Find Jobs</a>-->
+                <a class="btn btn-primary" routerLink="/companies">Explore Companies</a>
               </div>
-            </div>
-            <div class="form-group">
-              <label for="skills">Skills & Expertise</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-tools"></i></span>
-                <input type="text" id="skills" [(ngModel)]="candidate.skills" name="skills" class="form-control" placeholder="e.g., Angular, Java, SQL, React">
-              </div>
-            </div>
-            <div class="card-actions">
-              <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
-                <i class="bi bi-x-circle"></i> Cancel
-              </button>
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-circle"></i> Save Profile
-              </button>
             </div>
           </div>
         </div>
 
-        <!-- Resume Upload Card -->
-        <div class="form-card resume-card">
-          <div class="card-header">
-            <h3><i class="bi bi-file-earmark-pdf"></i> Resume & Documents</h3>
-          </div>
-          <div class="card-body">
-            <div class="resume-upload-area">
-              <div class="upload-zone" [class.has-file]="candidate.resume">
-                <i class="bi bi-cloud-upload"></i>
-                <h4>{{candidate.resume ? 'Resume Uploaded' : 'Upload Your Resume'}}</h4>
-                <p>{{candidate.resume ? candidate.resume.name : 'Drag & drop your resume here or click to browse'}}</p>
-                <input type="file" id="resume-upload" (change)="onFileSelected($event, 'resume')" accept=".pdf,.doc,.docx" hidden>
-                <label for="resume-upload" class="btn btn-upload">
-                  <i class="bi bi-plus-circle"></i> Choose File
-                </label>
+        <!-- Main -->
+        <div class="col-12 col-md-8">
+          <div class="card shadow-sm mb-4">
+            <div class="card-body">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <h5 class="mb-0">Application Status</h5>
+                <a class="btn btn-sm btn-outline-primary" routerLink="/jobs">Apply Now</a>
               </div>
-            </div>
-          </div>
-        </div>
+              <hr />
 
-        <!-- Applications Card -->
-        <div class="form-card applications-card">
-          <div class="card-header">
-            <h3><i class="bi bi-briefcase-fill"></i> My Job Applications</h3>
-          </div>
-          <div class="card-body">
-            <div class="applications-list" *ngIf="applicationStatus.length > 0; else noApplications">
-              <div class="application-item" *ngFor="let app of applicationStatus; let i = index">
-                <div class="application-header">
-                  <h4>{{app.jobTitle}}</h4>
-                  <span class="status-badge" [ngClass]="getStatusClass(app.status)">{{app.status}}</span>
-                </div>
-                <div class="application-details">
-                  <span class="applied-date">Applied 2 days ago</span>
-                  <div class="application-actions">
-                    <button class="btn btn-sm btn-outline">View Details</button>
-                    <button class="btn btn-sm btn-outline">Withdraw</button>
+              <!-- No applications yet -->
+              <div *ngIf="applications.length === 0" class="text-center py-4">
+                <div class="display-6 mb-2">🎯</div>
+                <p class="mb-3">You haven’t applied to any jobs yet.</p>
+                <a class="btn btn-primary" routerLink="/jobs">Apply for your dream job</a>
+              </div>
+
+              <!-- Applications List -->
+              <ul *ngIf="applications.length > 0" class="list-group list-group-flush">
+                <li
+                  class="list-group-item d-flex align-items-center justify-content-between"
+                  *ngFor="let app of applications; trackBy: trackById"
+                >
+                  <div>
+                    <div class="fw-semibold">{{ app.jobTitle || app.title || 'Job' }}</div>
+                    <small class="text-muted">
+                      {{ app.companyName || app.company || 'Company' }} ·
+                      Applied on {{ app.appliedAt | date:'mediumDate' }}
+                    </small>
                   </div>
-                </div>
-              </div>
+              <!-- Status text (text-only colors) -->
+                  <span class="status-badge"
+                        [ngClass]="{
+                          'status-pending': !app.status || app.status === 'PENDING',
+                          'status-review': app.status === 'REVIEW',
+                          'status-interview': app.status === 'INTERVIEW',
+                          'status-approved': app.status === 'APPROVED' || app.status === 'HIRED',
+                          'status-rejected': app.status === 'REJECTED'
+                        }">
+                    {{ app.status || 'PENDING' }}
+                  </span>
+
+                </li>
+              </ul>
             </div>
-            <ng-template #noApplications>
-              <div class="no-applications">
-                <i class="bi bi-briefcase"></i>
-                <h4>No Applications Yet</h4>
-                <p>Start applying to jobs to see your applications here.</p>
-                <button class="btn btn-primary">Browse Jobs</button>
-              </div>
-            </ng-template>
           </div>
         </div>
-      </form>
+        <!-- /Main -->
+      </div>
     </div>
   </div>
 </div>

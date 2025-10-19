@@ -1,84 +1,121 @@
-<div class="page-wrap">
-  <section class="signup-card">
+<!-- src/app/component/auth/sign-up/sign-up.html -->
+<div class="page-wrap" role="main" aria-labelledby="signup-heading">
+  <section class="signup-card" aria-live="polite">
     <!-- LEFT: image with overlay text -->
-    <!-- add ONE of: anim-fade-up | anim-typewriter | anim-kenburns -->
-    <div class="card-left anim-kenburns">
+    <div class="card-left anim-kenburns" aria-hidden="true">
       <div class="overlay">
         <h1>Your journey starts here.</h1>
-        <p class="overlay-sub" style="color:rgb(216, 35, 35)">Build your career passport with HireConnect.</p>
-        <a class="signin" href="/sign-in" style="color: aliceblue;" >Already have an Account? <span style="color:blue">Sign In</span></a>
+        <p class="overlay-sub">Build your career passport with HireConnect.</p>
+        <a class="signin" routerLink="/sign-in">Already have an Account? <strong>Sign In</strong></a>
       </div>
     </div>
-    
+
     <!-- RIGHT: register form -->
-    <div class="card-right">
-      <h2 class="login-title" style="color:rgb(230, 27, 27); text-align:center;">WELCOME TO HIRECONNECT</h2>
-      <h2 class="login-title" style="text-align:center;">REGISTER HERE</h2>
+    <div class="card-right" role="region" aria-labelledby="signup-heading-right">
+      <h2 id="signup-heading" class="login-title">WELCOME TO HIRECONNECT</h2>
+      <h3 id="signup-heading-right" class="login-sub">REGISTER HERE</h3>
 
-    <!-- Role selector -->
-    <div class="role-container">
-      <label class="role-label">I am a:</label>
-      <div class="role-buttons">
-        <button 
-          type="button" 
-          class="role-btn" 
-          [class.active]="role === 'candidate'" 
-          (click)="setRole('candidate')">
-          <span class="role-ico">👤</span>
-          <span>Candidate</span>
-        </button>
+      <!-- Inline status messages -->
+      <div *ngIf="successMessage" class="status success" role="status" style="margin:12px 0; padding:10px; border-radius:6px;">
+        <strong>{{ successMessage }}</strong>
 
-        <button 
-          type="button" 
-          class="role-btn" 
-          [class.active]="role === 'recruiter'" 
-          (click)="setRole('recruiter')">
-          <span class="role-ico">🏢</span>
-          <span>Recruiter</span>
-        </button>
+        <!-- If an immediate redirect happens, show animated spinner + message -->
+        <div style="display:flex; align-items:center; gap:10px; margin-top:8px;">
+          <div aria-hidden="true" class="small-spinner" style="width:18px;height:18px;border:3px solid rgba(0,0,0,0.08);border-top-color:#046b2a;border-radius:50%;animation:spin 1s linear infinite;"></div>
+          <span>Redirecting…</span>
+        </div>
+
+        <div style="margin-top:8px;">
+          Or <a routerLink="/sign-in">click here to sign in</a>.
+        </div>
       </div>
-    </div>
 
+      <div *ngIf="errorMessage" class="status error" role="alert" style="margin:12px 0; padding:10px; border-radius:6px;">
+        {{ errorMessage }}
+      </div>
 
+      <!-- Role selector -->
+      <div class="role-container" style="margin-bottom:14px;">
+        <label class="role-label" id="role-label">I am a:</label>
+        <div class="role-buttons" role="tablist" aria-labelledby="role-label">
+          <button 
+            type="button" 
+            class="role-btn" 
+            [class.active]="role === 'candidate'" 
+            (click)="setRole('candidate')"
+            aria-pressed="{{ role === 'candidate' }}">
+            <span class="role-ico">👤</span>
+            <span>Candidate</span>
+          </button>
 
-      <form class="login-form" (ngSubmit)="onSubmit()" #signUpForm="ngForm" novalidate>
+          <button 
+            type="button" 
+            class="role-btn" 
+            [class.active]="role === 'recruiter'" 
+            (click)="setRole('recruiter')"
+            aria-pressed="{{ role === 'recruiter' }}">
+            <span class="role-ico">🏢</span>
+            <span>Recruiter</span>
+          </button>
+        </div>
+      </div>
+
+      <form class="login-form" (ngSubmit)="onSubmit()" #signUpForm="ngForm" novalidate autocomplete="on" aria-describedby="signup-help">
+
         <div class="field-row">
           <div class="field">
-            <label class="field-label">First Name</label>
-            <input name="firstName" class="input" [(ngModel)]="firstName" required placeholder="Enter your first name" />
+            <label class="field-label" for="firstName">First Name</label>
+            <input id="firstName" name="firstName" class="input" [(ngModel)]="firstName" required placeholder="Enter your first name" aria-required="true" />
           </div>
           <div class="field">
-            <label class="field-label">Last Name</label>
-            <input name="lastName" class="input" [(ngModel)]="lastName" required placeholder="Enter your last name" />
+            <label class="field-label" for="lastName">Last Name</label>
+            <input id="lastName" name="lastName" class="input" [(ngModel)]="lastName" required placeholder="Enter your last name" aria-required="true" />
           </div>
         </div>
 
         <div class="field">
-          <label class="field-label">Your Email</label>
-          <input name="email" type="email" class="input" [(ngModel)]="email" required placeholder="Enter your email address" />
+          <label class="field-label" for="email">Your Email</label>
+          <input id="email" name="email" type="email" class="input" [(ngModel)]="email" required placeholder="Enter your email address" aria-required="true" />
         </div>
 
         <div class="field">
-          <label class="field-label">Phone Number</label>
-          <input name="phone" type="tel" class="input" [(ngModel)]="phone" required placeholder="Enter your phone number" />
+          <label class="field-label" for="phone">Phone Number</label>
+          <input id="phone" name="phone" type="tel" class="input" [(ngModel)]="phone" required placeholder="Enter your phone number" aria-required="true" />
         </div>
 
         <div class="field-row">
           <div class="field">
-            <label class="field-label">Password</label>
-            <input name="password" type="password" class="input" [(ngModel)]="password" required placeholder="Enter your password" />
+            <label class="field-label" for="password">Password</label>
+            <input id="password" name="password" type="password" class="input" [(ngModel)]="password" required placeholder="Enter your password" aria-required="true" />
           </div>
           <div class="field">
-            <label class="field-label">Confirm Password</label>
-            <input name="confirmPassword" type="password" class="input" [(ngModel)]="confirmPassword" required placeholder="Re-enter your password" />
+            <label class="field-label" for="confirmPassword">Confirm Password</label>
+            <input id="confirmPassword" name="confirmPassword" type="password" class="input" [(ngModel)]="confirmPassword" required placeholder="Re-enter your password" aria-required="true" />
           </div>
         </div>
 
-        <button class="login-btn" type="submit">Register</button>
-
-        
-
+        <button class="login-btn" type="submit" [disabled]="isLoading" aria-busy="{{ isLoading }}" style="width:100%; margin-top:12px;">
+          <ng-container *ngIf="!isLoading; else busy">
+            Register
+          </ng-container>
+          <ng-template #busy>
+            <span class="small-spinner" aria-hidden="true" style="width:18px;height:18px;border:3px solid rgba(0,0,0,0.08);border-top-color:#c62828;border-radius:50%;animation:spin 1s linear infinite;margin-right:8px;display:inline-block;"></span>
+            Registering…
+          </ng-template>
+        </button>
       </form>
     </div>
   </section>
 </div>
+
+<!-- quick inline spinner keyframes (if you don't include in global css) -->
+<style>
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Helpful small responsive tweaks (optional) */
+  .signup-card { display:flex; gap:0; }
+  @media (max-width: 900px) {
+    .signup-card { flex-direction: column; }
+    .card-left { height: 200px; }
+  }
+</style>

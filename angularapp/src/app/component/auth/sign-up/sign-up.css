@@ -70,6 +70,7 @@
   font-size: clamp(16px, 2vw, 18px);
   opacity: 0.95;
   text-shadow: 0 4px 16px rgba(0,0,0,0.45);
+  color: rgb(115, 115, 205);
 }
 
 /* RIGHT (form) */
@@ -184,13 +185,17 @@
 }
 .login-btn:hover { transform: translateY(-1px); }
 
+.login-sub{
+  color: rgb(194, 75, 84);
+}
+
 /* Signin link styling */
 .signin{
   display:block;
   text-align:center;
   font-size:14px;
   margin-top:12px;
-  color:#333;
+  color:#d63232;
   text-decoration:none;
   font-weight:500;
 }

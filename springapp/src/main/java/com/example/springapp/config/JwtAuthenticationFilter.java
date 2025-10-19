@@ -2,10 +2,14 @@ package com.example.springapp.config;
 
 import com.example.springapp.model.User;
 import com.example.springapp.repository.UserRepository;
+import com.example.springapp.security.AuthPrincipal;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -18,25 +22,22 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * JWT auth filter — robust public-path skip (handles context path) and debug logging.
- */
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
 
     private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public JwtAuthenticationFilter(JwtUtil jwtUtil, UserRepository userRepository) {
         this.jwtUtil = jwtUtil;
         this.userRepository = userRepository;
     }
 
-    // List of public path prefixes (these are matched after removing context path)
+    // Public paths (skip auth parsing completely)
     private static final List<String> PUBLIC_PATH_PREFIXES = List.of(
             "/v3/api-docs",
-            "/v3/api-docs/",
             "/v2/api-docs",
             "/swagger-ui",
             "/swagger-ui.html",
@@ -44,11 +45,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/webjars",
             "/configuration",
             "/actuator",
-            "/favicon.ico"
+            "/favicon.ico",
+            "/api/auth",
+            "/api/stats"   // <-- add this so /api/stats/** never triggers JWT handling
     );
 
-    private boolean isPublicPathNormalized(String normalizedPath) {
-        return PUBLIC_PATH_PREFIXES.stream().anyMatch(normalizedPath::startsWith);
+    private boolean isPublicPath(String normalizedPath) {
+        for (String p : PUBLIC_PATH_PREFIXES) {
+            if (normalizedPath.startsWith(p)) return true;
+        }
+        return false;
+    }
+
+    private void sendUnauthorized(HttpServletResponse response, String message, String path) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json");
+        Map<String, Object> body = Map.of(
+                "status", HttpServletResponse.SC_UNAUTHORIZED,
+                "error", "Unauthorized",
+                "message", message == null ? "Authentication required" : message,
+                "path", path
+        );
+        objectMapper.writeValue(response.getOutputStream(), body);
     }
 
     @Override
@@ -56,60 +74,97 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
 
-        // Normalize path by removing the context path, if any
         String contextPath = Optional.ofNullable(request.getContextPath()).orElse("");
-        String requestUri = Optional.ofNullable(request.getRequestURI()).orElse("");
-        String normalizedPath = requestUri;
-        if (!contextPath.isEmpty() && requestUri.startsWith(contextPath)) {
-            normalizedPath = requestUri.substring(contextPath.length());
-        }
+        String requestUri  = Optional.ofNullable(request.getRequestURI()).orElse("");
+        String normalized  = requestUri.startsWith(contextPath) ? requestUri.substring(contextPath.length()) : requestUri;
+        String method      = Optional.ofNullable(request.getMethod()).orElse("GET");
 
-        logger.debug("JwtFilter: requestUri='{}', contextPath='{}', normalizedPath='{}', method={}",
-                requestUri, contextPath, normalizedPath, request.getMethod());
-
-        // If the request is to any known public path, skip JWT validation
-        if (isPublicPathNormalized(normalizedPath)) {
-            logger.debug("JwtFilter: skipping public path '{}'", normalizedPath);
+        if ("OPTIONS".equalsIgnoreCase(method) || isPublicPath(normalized)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        // Continue with existing JWT flow (graceful early returns if token missing/invalid)
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            logger.debug("JwtFilter: no Bearer token present on '{}'", normalizedPath);
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7);
-        if (!jwtUtil.validate(token)) {
-            logger.debug("JwtFilter: token invalid for '{}'", normalizedPath);
-            filterChain.doFilter(request, response);
+        try {
+            String authHeader = Optional.ofNullable(request.getHeader("Authorization"))
+                    .orElse(request.getHeader("authorization"));
+
+            if (authHeader == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String headerTrim = authHeader.trim();
+            if (!headerTrim.regionMatches(true, 0, "Bearer ", 0, 7)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String token = headerTrim.substring(7).trim();
+            if (token.isEmpty()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            if (!jwtUtil.validate(token)) {
+                sendUnauthorized(response, "Invalid or expired token", normalized);
+                return;
+            }
+
+            String username = Optional.ofNullable(jwtUtil.extractUsername(token)).orElse("").trim();
+            if (username.isEmpty()) {
+                sendUnauthorized(response, "Token subject missing", normalized);
+                return;
+            }
+
+            List<GrantedAuthority> authorities = new ArrayList<>();
+
+            try {
+                Claims claims = jwtUtil.extractAllClaims(token);
+                Object rolesObj = (claims != null) ? claims.get("roles") : null;
+                if (rolesObj instanceof List<?> list) {
+                    for (Object o : list) {
+                        String r = String.valueOf(o).trim().toUpperCase(Locale.ROOT);
+                        if (!r.startsWith("ROLE_")) r = "ROLE_" + r;
+                        authorities.add(new SimpleGrantedAuthority(r));
+                    }
+                }
+            } catch (Exception ignored) {}
+
+            try {
+                userRepository.findByUsername(username).or(() -> userRepository.findByEmail(username))
+                        .ifPresent(u -> {
+                            if (u.getRoles() != null) {
+                                Set<String> existing = authorities.stream()
+                                        .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+                                u.getRoles().forEach(role -> {
+                                    String r = role.getName();
+                                    if (r != null) {
+                                        r = r.trim().replace(' ', '_').toUpperCase(Locale.ROOT);
+                                        if (!r.startsWith("ROLE_")) r = "ROLE_" + r;
+                                        if (existing.add(r)) {
+                                            authorities.add(new SimpleGrantedAuthority(r));
+                                        }
+                                    }
+                                });
+                            }
+                        });
+            } catch (Exception ignored) {}
+
+            AuthPrincipal principal = new AuthPrincipal(username);
+            UsernamePasswordAuthenticationToken auth =
+                    new UsernamePasswordAuthenticationToken(principal, null, authorities);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+
+        } catch (Exception ex) {
+            // if anything unexpected happens while parsing token, respond 401 with a clear message
+            sendUnauthorized(response, "Authentication processing error", normalized);
             return;
         }
-
-        String username = jwtUtil.extractUsername(token);
-        if (username == null) {
-            logger.debug("JwtFilter: token has no username for '{}'", normalizedPath);
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        Optional<User> opt = userRepository.findByUsername(username);
-        if (opt.isEmpty()) {
-            logger.debug("JwtFilter: user not found '{}' for '{}'", username, normalizedPath);
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        User user = opt.get();
-        var authorities = user.getRoles().stream()
-                .map(r -> new SimpleGrantedAuthority("ROLE_" + r.getName()))
-                .collect(Collectors.toList());
-
-        var auth = new UsernamePasswordAuthenticationToken(username, null, authorities);
-        SecurityContextHolder.getContext().setAuthentication(auth);
 
         filterChain.doFilter(request, response);
     }

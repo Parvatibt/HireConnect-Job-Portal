@@ -4,3 +4,5 @@ body {
   background: #f9fafb;
   color: #111827;
 }
+:host ::ng-deep .app-layout { display:flex; flex-direction:column; min-height:100vh; }
+:host ::ng-deep .main-content { flex:1 1 auto; }

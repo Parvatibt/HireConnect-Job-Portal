@@ -1,0 +1,207 @@
+/* privacy.css - replace your current file with this */
+/* Recommended: add <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet"> in index.html */
+
+:root{
+  --bg-1: #f5f7fb;
+  --bg-2: #eef3ff;
+  --card-bg: rgba(255,255,255,0.82);
+  --accent: #2563eb;        /* deep blue accent */
+  --accent-2: #7c3aed;      /* purple accent for small highlights */
+  --muted: #52596b;
+  --glass-shadow: 0 8px 30px rgba(38,50,56,0.08);
+  --radius-lg: 16px;
+  --radius-md: 12px;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+  color: #0f1724;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* Container */
+.privacy-container{
+  max-width:1100px;
+  margin:48px auto;
+  padding:28px;
+  border-radius:20px;
+  position:relative;
+  overflow:visible;
+}
+
+/* Hero */
+.privacy-hero{
+  display:flex;
+  gap:28px;
+  align-items:center;
+  background: linear-gradient(90deg, rgba(37,99,235,0.08), rgba(124,58,237,0.06));
+  padding:26px;
+  border-radius:14px;
+  box-shadow: 0 6px 30px rgba(40,50,80,0.04);
+  margin-bottom:28px;
+  align-items:flex-start;
+}
+
+.privacy-hero h1{
+  margin:0;
+  font-size:1.75rem;
+  letter-spacing:-0.2px;
+  color: #071133;
+  font-weight:700;
+}
+
+.privacy-hero p{
+  margin:6px 0 0 0;
+  color:var(--muted);
+  font-size:1rem;
+  line-height:1.5;
+  max-width:900px;
+}
+
+/* brand style */
+.brand{
+  color:var(--accent);
+  font-weight:700;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-decoration: none;
+}
+
+/* Grid of cards */
+.privacy-content{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap:20px;
+}
+
+/* Single card */
+.card{
+  background: var(--card-bg);
+  border-radius: var(--radius-md);
+  padding:22px;
+  backdrop-filter: blur(6px) saturate(120%);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid rgba(255,255,255,0.6);
+  transition: transform .28s cubic-bezier(.2,.9,.25,1), box-shadow .28s ease;
+  position:relative;
+  overflow:hidden;
+}
+
+.card::after{
+  /* subtle diagonal sheen */
+  content: "";
+  position:absolute;
+  inset: -40% -40% auto auto;
+  width:120%;
+  height:60%;
+  transform: rotate(-12deg);
+  background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.07));
+  pointer-events:none;
+  mix-blend-mode: overlay;
+  opacity:0.6;
+}
+
+.card:hover{
+  transform: translateY(-8px);
+  box-shadow: 0 14px 40px rgba(30,40,80,0.12);
+}
+
+/* Card content typography */
+.card h2{
+  font-size:1.05rem;
+  margin:0 0 10px 0;
+  color: #0b2a66; /* deep blue */
+  font-weight:700;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+/* optional small icon before headings */
+.card h2::before{
+  content: "";
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  display:inline-block;
+  transform: translateY(1px);
+}
+
+/* paragraph */
+.card p{
+  color: #3f4a5a;
+  margin:0;
+  font-size:0.96rem;
+  line-height:1.6;
+}
+
+/* Emphasize contact email (last card) */
+.card strong{
+  color: #0b2a66;
+  font-weight:700;
+}
+
+/* smaller footnote row for policy date or update */
+.policy-meta{
+  margin-top:12px;
+  font-size:0.88rem;
+  color: #6b7280;
+}
+
+/* Responsive adjustments */
+@media (max-width:920px){
+  .privacy-content{
+    grid-template-columns: 1fr;
+  }
+  .privacy-container{
+    padding:18px;
+    margin:22px;
+  }
+  .privacy-hero{
+    flex-direction:column;
+    gap:8px;
+    padding:18px;
+  }
+  .privacy-hero h1{ font-size:1.5rem; }
+}
+
+/* Small utility: action button (if you want later) */
+.privacy-cta{
+  display:inline-flex;
+  gap:10px;
+  margin-top:16px;
+  align-items:center;
+}
+.btn{
+  padding:10px 16px;
+  border-radius:10px;
+  font-weight:600;
+  text-decoration:none;
+  border: none;
+  cursor:pointer;
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:white;
+  box-shadow: 0 8px 20px rgba(37,99,235,0.12);
+}
+
+/* Accessibility: focus outlines */
+.btn:focus, .card:focus{
+  outline: 3px solid rgba(37,99,235,0.14);
+  outline-offset:3px;
+}
+
+/* Small print for updates */
+.policy-updated{
+  display:block;
+  margin-top:12px;
+  font-size:0.88rem;
+  color:#6b7280;
+}

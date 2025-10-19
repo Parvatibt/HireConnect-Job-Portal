@@ -1,0 +1,4 @@
+.apps { padding:20px; }
+.status.pending { color:orange; }
+.status.approved { color:green; }
+.status.rejected { color:red; }

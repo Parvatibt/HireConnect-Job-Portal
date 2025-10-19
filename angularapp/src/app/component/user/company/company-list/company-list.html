@@ -1,95 +1,199 @@
+<!-- company-list.html -->
 <div class="companies-page">
-  <div class="companies-container">
-    <!-- Header Section -->
-    <div class="companies-header">
-      <h1><i class="bi bi-building"></i> Top Companies</h1>
-      <p>Discover amazing companies and their opportunities</p>
-      <div class="search-filters">
-        <div class="search-bar">
-          <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input type="text" [(ngModel)]="searchTerm" placeholder="Search companies..." class="form-control">
-          </div>
-          <button class="btn btn-search">
-            <i class="bi bi-search"></i> Search
-          </button>
-        </div>
+  <div class="companies-hero" role="banner" aria-hidden="false">
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <!-- add animation classes -->
+        <h1 class="hero-title animate-zoom" id="hero-title">Find Your Dream Company</h1>
+        <p class="hero-sub animate-fadeup" id="hero-sub">Explore, compare, and connect with employers hiring today.</p>
       </div>
+
+      <form class="hero-search" (ngSubmit)="onSearch()" role="search" aria-label="Company search">
+        <input
+          type="text"
+          name="q"
+          [(ngModel)]="search"
+          placeholder="Search companies (name, location)"
+          aria-label="Search companies"
+        />
+        <button class="btn-search" type="submit">Search</button>
+      </form>
     </div>
+  </div>
 
-    <!-- Companies List -->
-    <div class="companies-content">
-      <div class="companies-stats">
-        <div class="stat-card">
-          <i class="bi bi-building"></i>
-          <div>
-            <h3>{{companies.length}}</h3>
-            <p>Total Companies</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <i class="bi bi-briefcase"></i>
-          <div>
-            <h3>{{getTotalJobs()}}</h3>
-            <p>Open Positions</p>
-          </div>
-        </div>
-        <div class="stat-card">
-          <i class="bi bi-geo-alt"></i>
-          <div>
-            <h3>{{getUniqueLocations()}}</h3>
-            <p>Locations</p>
-          </div>
-        </div>
+  <div class="companies-content">
+    <!-- LEFT: sidebar list of companies -->
+    <aside class="companies-sidebar" aria-label="Companies list">
+      <div class="sidebar-header">
+        <h3>Companies ({{ filteredCompanies.length }})</h3>
+        <button class="btn-refresh" type="button" (click)="refresh()">Refresh</button>
       </div>
 
-      <div class="companies-grid" *ngIf="filteredCompanies.length > 0; else noCompanies">
-        <div class="company-card" *ngFor="let company of filteredCompanies; let i = index">
-          <div class="company-header">
-            <div class="company-logo">
-              <i class="bi bi-building"></i>
+      <div *ngIf="loading" class="loading">Loading companies…</div>
+      <div *ngIf="!loading && filteredCompanies.length === 0" class="no-results">No companies found.</div>
+
+      <ul class="company-list" role="list">
+        <li *ngFor="let c of filteredCompanies; trackBy: trackByCompanyId"
+            [class.selected]="selectedCompany?.id === c.id"
+            (click)="selectCompany(c)"
+            role="listitem"
+            tabindex="0"
+            (keydown.enter)="selectCompany(c)"
+            aria-label="Select {{ c.name }}">
+          <div class="company-row">
+            <div class="company-left-row">
+              <!-- logo or initial -->
+              <div class="company-thumb" aria-hidden="true">
+                <img *ngIf="c.logoUrl" [src]="c.logoUrl" [alt]="c.name + ' logo'"/>
+                <span *ngIf="!c.logoUrl" class="placeholder">{{ (c.name || '') | slice:0:1 }}</span>
+              </div>
+
+              <div class="company-info">
+                <div class="company-name" title="{{ c.name }}">{{ c.name }}</div>
+              </div>
             </div>
-            <div class="company-info">
-              <h3>{{company.name}}</h3>
-              <div class="company-meta">
-                <span class="location">
-                  <i class="bi bi-geo-alt"></i>
-                  {{company.location}}
-                </span>
-                <span class="jobs-count">
-                  <i class="bi bi-briefcase"></i>
-                  {{company.jobs}} Open Jobs
-                </span>
+
+            <div class="company-meta">
+              <span class="jobs-count">{{ statsMap[c.id ?? -1]?.jobCount ?? 0 }} jobs</span>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </aside>
+
+    <!-- MIDDLE: company details + analysis -->
+    <main class="companies-main" aria-live="polite">
+      <div *ngIf="!selectedCompany && !loading" class="empty-state">
+        <h2>Select a company</h2>
+        <p>Pick a company from the left to view posted jobs and quick analytics (jobs count, avg salary, top roles).</p>
+      </div>
+
+      <div *ngIf="selectedCompany" class="company-card" role="region" aria-label="{{ selectedCompany.name }} details">
+        <!-- HEADER: small square logo (left) + name + quick meta + actions -->
+        <div class="company-header">
+          <div class="company-left company-header-left">
+            <img
+              *ngIf="selectedCompany.logoUrl"
+              [src]="selectedCompany.logoUrl"
+              [alt]="selectedCompany.name + ' logo'"
+              class="company-logo-small"
+              aria-hidden="true"
+            />
+            <div class="company-title-wrap">
+              <h2>{{ selectedCompany.name }}</h2>
+              <div class="company-small">
+                <span *ngIf="selectedCompany.location">{{ selectedCompany.location }}</span>
+                <span *ngIf="selectedCompany.size"> • {{ selectedCompany.size }}</span>
+                <span *ngIf="selectedCompany.founded"> • Founded {{ selectedCompany.founded }}</span>
               </div>
             </div>
           </div>
-          <div class="company-description">
-            <p>{{company.description || 'Join our dynamic team and work on cutting-edge projects. We offer competitive benefits and a great work environment.'}}</p>
+
+          <div class="company-actions">
+            <button
+              *ngIf="canEditCompany"
+              class="btn-update"
+              type="button"
+              [routerLink]="['/companies', selectedCompany.id]"
+              aria-label="Update company details for {{ selectedCompany.name }}">
+              Update Company Details
+            </button>
+
+            <button class="btn-refresh" (click)="refreshSelected()">Refresh</button>
           </div>
-          <div class="company-footer">
-            <div class="company-tags">
-              <span class="tag" *ngFor="let tag of getCompanyTags(company)">{{tag}}</span>
+        </div>
+
+        <div class="company-body">
+          <!-- ABOUT -->
+          <div class="company-about">
+            <h3>About</h3>
+            <p *ngIf="selectedCompany.description; else noDesc">{{ selectedCompany.description }}</p>
+            <ng-template #noDesc><p>No description available.</p></ng-template>
+          </div>
+
+          <!-- ANALYTICS -->
+          <div class="company-analytics">
+            <h3>Quick analysis</h3>
+            <div class="analytics-grid">
+              <div class="analytic-item">
+                <div class="analytic-value">{{ statsMap[selectedCompany?.id ?? -1]?.jobCount ?? 0 }}</div>
+                <div class="analytic-label">Open jobs</div>
+              </div>
+
+              <div class="analytic-item">
+                <div class="analytic-value">
+                  {{ statsMap[selectedCompany?.id ?? -1]?.avgSalaryText ?? '—' }}
+                </div>
+                <div class="analytic-label">Avg salary range</div>
+              </div>
+
+              <div class="analytic-item">
+                <div class="analytic-value">{{ statsMap[selectedCompany?.id ?? -1]?.topRole || '—' }}</div>
+                <div class="analytic-label">Top role</div>
+              </div>
+
+              <div class="analytic-item">
+                <div class="analytic-value">{{ statsMap[selectedCompany?.id ?? -1]?.recentPostCount ?? 0 }}</div>
+                <div class="analytic-label">Posted this month</div>
+              </div>
             </div>
-            <div class="company-actions">
-              <button class="btn btn-outline btn-sm">
-                <i class="bi bi-eye"></i> View Jobs
-              </button>
-              <button class="btn btn-primary btn-sm">
-                <i class="bi bi-heart"></i> Follow
-              </button>
+          </div>
+
+          <!-- META BLOCK (contact & socials) - arranged inline -->
+          <div class="company-meta-block" aria-label="Company contact and links">
+            <div class="company-logo-wrap">
+              <img *ngIf="selectedCompany.logoUrl" [src]="selectedCompany.logoUrl" [alt]="selectedCompany.name + ' logo'" class="company-logo" />
+              <div *ngIf="!selectedCompany.logoUrl" class="company-logo placeholder"> </div>
             </div>
+
+            <div class="company-meta-info inline-meta">
+              <div class="company-contact-row inline-contact">
+                <div *ngIf="selectedCompany.website" class="contact-item">
+                  <span class="icon" aria-hidden="true">🌐</span>
+                  <a [href]="selectedCompany.website" target="_blank" rel="noopener">{{ selectedCompany.website }}</a>
+                </div>
+
+                <div *ngIf="selectedCompany.email" class="contact-item">
+                  <span class="icon" aria-hidden="true">📧</span>
+                  <a [href]="'mailto:' + selectedCompany.email">{{ selectedCompany.email }}</a>
+                </div>
+
+                <div *ngIf="selectedCompany.phone" class="contact-item">
+                  <span class="icon" aria-hidden="true">📞</span>
+                  <span>{{ selectedCompany.phone }}</span>
+                </div>
+              </div>
+
+              <div class="social-links" *ngIf="selectedCompany.linkedinUrl || selectedCompany.facebookUrl || selectedCompany.instagramUrl || selectedCompany.twitterUrl">
+                <a *ngIf="selectedCompany.linkedinUrl" [href]="selectedCompany.linkedinUrl" target="_blank" rel="noopener">LinkedIn</a>
+                <a *ngIf="selectedCompany.facebookUrl" [href]="selectedCompany.facebookUrl" target="_blank" rel="noopener">Facebook</a>
+                <a *ngIf="selectedCompany.instagramUrl" [href]="selectedCompany.instagramUrl" target="_blank" rel="noopener">Instagram</a>
+                <a *ngIf="selectedCompany.twitterUrl" [href]="selectedCompany.twitterUrl" target="_blank" rel="noopener">Twitter</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- JOBS -->
+          <div class="company-jobs">
+            <h3>Recent jobs</h3>
+            <div *ngIf="(statsMap[selectedCompany?.id ?? -1]?.jobsList?.length ?? 0) === 0" class="no-jobs">No jobs posted yet.</div>
+
+            <ul class="job-list-small">
+              <li *ngFor="let j of (statsMap[selectedCompany?.id ?? -1]?.jobsList || [])">
+                <a [routerLink]="['/jobs', j.id]" class="job-link">
+                  <div class="job-title">{{ j.title }}</div>
+                  <div class="job-meta">
+                    <span *ngIf="j.location">{{ j.location }}</span>
+                    <span *ngIf="j.minSalary || j.maxSalary"> • ₹{{ j.minSalary ?? '—' }} - ₹{{ j.maxSalary ?? '—' }}</span>
+                    <span *ngIf="j.postedAt"> • {{ j.postedAt | date:'mediumDate' }}</span>
+                  </div>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
 
-      <ng-template #noCompanies>
-        <div class="no-companies">
-          <i class="bi bi-building"></i>
-          <h3>No Companies Found</h3>
-          <p>Try adjusting your search criteria or check back later for new companies.</p>
-          <button class="btn btn-primary">Browse All Companies</button>
-        </div>
-      </ng-template>
-    </div>
+    </main>
   </div>
 </div>

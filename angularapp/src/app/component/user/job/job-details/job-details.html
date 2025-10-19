@@ -1,128 +1,196 @@
 <div class="job-details-page">
   <div class="job-details-container">
-    <!-- Header Section -->
     <div class="job-details-header">
       <div class="breadcrumb">
-        <a routerLink="/jobs" class="breadcrumb-link">Jobs</a>
+        <a routerLink="/jobs" class="breadcrumb-link" (click)="backToList()">Jobs</a>
         <span class="breadcrumb-separator">></span>
         <span class="breadcrumb-current">Job Details</span>
       </div>
     </div>
 
-    <!-- Job Information Card -->
-    <div class="job-info-card">
-      <div class="job-header">
-        <div class="job-title-section">
-          <h1>Senior Frontend Developer</h1>
-          <div class="job-meta">
-            <span class="company">
-              <i class="bi bi-building"></i>
-              TechCorp Solutions
-            </span>
-            <span class="location">
-              <i class="bi bi-geo-alt"></i>
-              Bangalore, India
-            </span>
-            <span class="experience">
-              <i class="bi bi-clock"></i>
-              3-5 years
-            </span>
-            <span class="salary">
-              <i class="bi bi-currency-rupee"></i>
-              ₹8-15 LPA
-            </span>
+    <div *ngIf="loading" class="card-body">Loading job details…</div>
+    <div *ngIf="error" class="text-danger card-body">{{ error }}</div>
+
+    <ng-container *ngIf="!loading && job">
+      <div class="job-info-card">
+        <div class="job-header">
+          <div class="job-title-section">
+            <h1>{{ job.title }}</h1>
+            <div class="job-meta">
+              <span class="company"><i class="bi bi-building"></i> {{ job.company?.name || '—' }}</span>
+              <span class="location" *ngIf="job.location"><i class="bi bi-geo-alt"></i> {{ job.location }}</span>
+              <span class="experience" *ngIf="job.minExp != null || job.maxExp != null"><i class="bi bi-clock"></i> {{ rangeText() }}</span>
+              <span class="salary" *ngIf="job.minSalary != null || job.maxSalary != null"><i class="bi bi-currency-rupee"></i> {{ salaryText() }}</span>
+            </div>
           </div>
-        </div>
-        <div class="job-actions">
-          <span class="job-type">Full-time</span>
-          <span class="posted-date">Posted 2 days ago</span>
-          <div class="action-buttons">
-            <button class="btn btn-outline">
-              <i class="bi bi-bookmark"></i> Save Job
-            </button>
-            <button class="btn btn-primary" (click)="applyForJob()">
-              <i class="bi bi-send"></i> Apply Now
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
 
-    <!-- Job Description Card -->
-    <div class="job-description-card">
-      <div class="card-header">
-        <h3><i class="bi bi-file-text"></i> Job Description</h3>
-      </div>
-      <div class="card-body">
-        <p>We are looking for a Senior Frontend Developer to join our dynamic team. You will be responsible for developing high-quality web applications using modern frontend technologies and working with cutting-edge frameworks.</p>
-        
-        <h4>Key Responsibilities:</h4>
-        <ul>
-          <li>Design and develop responsive web applications using Angular, React, or Vue.js</li>
-          <li>Collaborate with UI/UX designers to implement pixel-perfect designs</li>
-          <li>Write clean, maintainable, and efficient code</li>
-          <li>Participate in code reviews and technical discussions</li>
-          <li>Optimize applications for maximum speed and scalability</li>
-          <li>Work closely with backend developers to integrate APIs</li>
-        </ul>
+          <div class="job-actions">
+            <span class="job-type">{{ job.employmentType || 'Full-time' }}</span>
+            <span class="posted-date" *ngIf="job.postedAt">Posted {{ job.postedAt | date:'mediumDate' }}</span>
+            <div class="action-buttons">
+              <button class="btn btn-outline" (click)="backToList()"><i class="bi bi-arrow-left"></i> Back</button>
 
-        <h4>Requirements:</h4>
-        <ul>
-          <li>Bachelor's degree in Computer Science or related field</li>
-          <li>3+ years of experience in frontend development</li>
-          <li>Proficiency in HTML5, CSS3, JavaScript (ES6+)</li>
-          <li>Experience with modern frontend frameworks (Angular, React, or Vue.js)</li>
-          <li>Knowledge of responsive design principles</li>
-          <li>Experience with version control systems (Git)</li>
-          <li>Strong problem-solving and communication skills</li>
-        </ul>
-
-        <h4>Preferred Qualifications:</h4>
-        <ul>
-          <li>Experience with TypeScript</li>
-          <li>Knowledge of testing frameworks (Jest, Jasmine)</li>
-          <li>Experience with build tools (Webpack, Vite)</li>
-          <li>Familiarity with design systems and component libraries</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Company Information Card -->
-    <div class="company-info-card">
-      <div class="card-header">
-        <h3><i class="bi bi-building"></i> About Company</h3>
-      </div>
-      <div class="card-body">
-        <div class="company-details">
-          <div class="company-logo">
-            <i class="bi bi-building"></i>
-          </div>
-          <div class="company-info">
-            <h4>TechCorp Solutions</h4>
-            <p>We are a leading technology company specializing in innovative software solutions. Our team of 500+ professionals works across multiple locations to deliver cutting-edge products to clients worldwide.</p>
-            <div class="company-meta">
-              <span><i class="bi bi-people"></i> 500+ Employees</span>
-              <span><i class="bi bi-geo-alt"></i> Multiple Locations</span>
-              <span><i class="bi bi-calendar"></i> Founded 2010</span>
+              <!-- Top apply button: disabled when applied or while checking -->
+              <button
+                class="btn btn-primary"
+                (click)="openApplyModal()"
+                [disabled]="isApplied || loadingApplied"
+                title="{{ isApplied ? 'You have already applied' : '' }}">
+                <i class="bi bi-send"></i>
+                {{ loadingApplied ? 'Checking…' : (isApplied ? 'Applied' : 'Apply Now') }}
+              </button>
             </div>
           </div>
         </div>
       </div>
+
+      <div class="job-description-card">
+        <div class="card-header"><h3><i class="bi bi-file-text"></i> Job Description</h3></div>
+        <div class="card-body">
+          <p *ngIf="job.description; else noDesc">{{ job.description }}</p>
+          <ng-template #noDesc><p>Description not provided by recruiter.</p></ng-template>
+
+          <div *ngIf="job.responsibilities && job.responsibilities.length">
+            <h4>Responsibilities:</h4>
+            <ul>
+              <li *ngFor="let r of job.responsibilities">{{ r }}</li>
+            </ul>
+          </div>
+
+          <h4>Requirements:</h4>
+          <ul>
+            <li *ngIf="job.minExp != null || job.maxExp != null">Experience: {{ rangeText() }}</li>
+            <li *ngIf="job.minSalary != null || job.maxSalary != null">Salary: {{ salaryText() }}</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="company-info-card" *ngIf="job.company">
+        <div class="card-header"><h3><i class="bi bi-building"></i> About Company</h3></div>
+        <div class="card-body">
+          <div class="company-details">
+            <div class="company-logo"><i class="bi bi-building"></i></div>
+            <div class="company-info">
+              <h4>{{ job.company.name }}</h4>
+              <p>{{ job.company.description || 'No company description available.' }}</p>
+              <div class="company-meta">
+                <span *ngIf="job.company.size"><i class="bi bi-people"></i> {{ job.company.size }}</span>
+                <span *ngIf="job.company.location"><i class="bi bi-geo-alt"></i> {{ job.company.location }}</span>
+                <span *ngIf="job.company.founded"><i class="bi bi-calendar"></i> Founded {{ job.company.founded }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="apply-section">
+        <div class="apply-card">
+          <h3>Ready to Apply?</h3>
+          <p>Click the button below to start your application process.</p>
+          <div class="apply-actions">
+            <a routerLink="/jobs" class="btn btn-secondary" (click)="backToList()"><i class="bi bi-arrow-left"></i> Back to Jobs</a>
+
+            <!-- Bottom apply button: disabled when applied or while checking -->
+            <button
+              class="btn btn-primary btn-large"
+              (click)="openApplyModal()"
+              [disabled]="isApplied || loadingApplied"
+              title="{{ isApplied ? 'You have already applied for this job' : '' }}">
+              <i class="bi bi-send"></i>
+              {{ loadingApplied ? 'Checking…' : (isApplied ? 'Applied' : 'Apply for this Job') }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</div>
+
+<!-- Apply modal -->
+<div class="modal-backdrop" *ngIf="showApplyModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3>Apply for {{ job?.title }}</h3>
+      <button class="close-btn" (click)="closeModal()">✕</button>
     </div>
 
-    <!-- Apply Now Section -->
-    <div class="apply-section">
-      <div class="apply-card">
-        <h3>Ready to Apply?</h3>
-        <p>Join our team and be part of something amazing. Click the button below to start your application process.</p>
-        <div class="apply-actions">
-          <a routerLink="/jobs" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Back to Jobs
-          </a>
-          <button class="btn btn-primary btn-large" (click)="applyForJob()">
-            <i class="bi bi-send"></i> Apply for this Job
+    <div class="modal-body">
+      <form (ngSubmit)="submitApplication()" #appForm="ngForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full name *</label>
+            <input name="candidateName" [(ngModel)]="application.candidateName" required class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input name="candidateEmail" [(ngModel)]="application.candidateEmail" type="email" required class="form-control" />
+          </div>
+
+          <div class="form-group">
+            <label>Phone *</label>
+            <input name="candidatePhone" [(ngModel)]="application.candidatePhone" required class="form-control" />
+          </div>
+
+          <!-- File upload (actual file) -->
+          <div class="form-group">
+            <label>Resume (PDF/DOC) *</label>
+            <div class="file-upload-inline">
+              <input type="file" id="modalResume" (change)="onModalFileSelected($event)" accept=".pdf,.doc,.docx" hidden>
+              <label for="modalResume" class="btn btn-upload">
+                <i class="bi bi-cloud-upload"></i>
+                {{ modalSelectedFileName ? modalSelectedFileName : 'Choose Resume' }}
+              </label>
+              <small class="ms-2 text-muted" *ngIf="modalSelectedFileName">{{ modalSelectedFileName }}</small>
+            </div>
+            <div *ngIf="applyError" class="text-danger small mt-1">{{ applyError }}</div>
+          </div>
+
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" [disabled]="applying">
+            {{ applying ? 'Applying…' : 'Submit Application' }}
           </button>
         </div>
+      </form>
+
+      <div *ngIf="applyError && !modalSelectedFileName" class="text-danger mt-2">{{ applyError }}</div>
+      <div *ngIf="applySuccess" class="text-success mt-2">{{ applySuccess }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Sign-in prompt modal (Job details) -->
+<div
+  class="auth-prompt-backdrop"
+  *ngIf="showAuthPrompt"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-labelledby]="'authPromptTitle'"
+>
+  <div class="auth-prompt-card" role="document">
+    <button class="close-x" aria-label="Close" (click)="closeAuthPrompt()">✕</button>
+
+    <div class="auth-prompt-body">
+      <div class="auth-illustration" aria-hidden="true">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" focusable="false" aria-hidden="true">
+          <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" fill="#1f5fe6"/>
+          <path d="M2 20a9.999 9.999 0 0120 0H2z" fill="#e6f0ff"/>
+        </svg>
+      </div>
+
+      <h2 id="authPromptTitle">Sign in to apply</h2>
+      <p>To apply for <strong>{{ job?.title || 'this job' }}</strong>, please sign in first. If you don't have an account, you can register.</p>
+
+      <div class="auth-prompt-actions">
+        <button class="btn btn-primary" (click)="goToLogin()">Sign In</button>
+        <button class="btn btn-secondary" (click)="goToRegister()">Register</button>
+      </div>
+
+      <div class="auth-prompt-help">
+        <small>Already signed in but seeing this? Try refreshing or check your session.</small>
       </div>
     </div>
   </div>

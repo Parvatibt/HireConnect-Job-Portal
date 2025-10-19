@@ -1,20 +1,78 @@
+<div class="review-page">
+  <div class="review-container">
+    <header class="review-header">
+      <h1>Share your feedback</h1>
+      <p class="sub">We value your thoughts — tell us about your experience.</p>
+    </header>
 
-<div class="review-form-container">
-  <h3>Share Your Experience</h3>
-  <form (ngSubmit)="submitReview()" #reviewForm="ngForm">
-    <div class="form-group">
-      <label for="role">I am a:</label>
-      <select id="role" [(ngModel)]="role" name="role" required>
-        <option value="">Select</option>
-        <option value="Candidate">Candidate</option>
-        <option value="Recruiter">Recruiter</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="review">Your Review:</label>
-      <textarea id="review" [(ngModel)]="reviewText" name="reviewText" rows="3" required placeholder="Write your review..."></textarea>
-    </div>
-    <button type="submit" [disabled]="!reviewForm.form.valid">Submit Review</button>
-    <div *ngIf="submitted" class="success-msg">Thank you for your feedback!</div>
-  </form>
+    <form #reviewForm="ngForm" (ngSubmit)="submit()" class="review-form" novalidate>
+      <!-- NAME -->
+      <div class="form-row">
+        <label for="name">Name <span aria-hidden="true" class="req">*</span></label>
+        <input
+          id="name"
+          name="name"
+          required
+          [(ngModel)]="model.name"
+          #nameModel="ngModel"
+          placeholder="Your full name"
+          class="form-control"
+          aria-required="true"
+        />
+        <div class="input-error"
+             *ngIf="nameModel?.invalid && (nameModel?.dirty || nameModel?.touched)">
+          <small *ngIf="nameModel?.errors?.['required']">Name is required.</small>
+        </div>
+      </div>
+
+      <!-- DESIGNATION -->
+      <div class="form-row">
+        <label for="designation">Designation / Company</label>
+        <input
+          id="designation"
+          name="designation"
+          [(ngModel)]="model.designation"
+          #desigModel="ngModel"
+          placeholder="e.g. Software Engineer at Acme"
+          class="form-control"
+        />
+      </div>
+
+      <!-- MESSAGE -->
+      <div class="form-row">
+        <label for="message">Feedback <span aria-hidden="true" class="req">*</span></label>
+        <textarea
+          id="message"
+          name="message"
+          required
+          rows="6"
+          [(ngModel)]="model.message"
+          #msgModel="ngModel"
+          placeholder="Tell us what you liked or how we can improve..."
+          class="form-control"
+          aria-required="true"
+        ></textarea>
+
+        <div class="input-error"
+             *ngIf="msgModel?.invalid && (msgModel?.dirty || msgModel?.touched)">
+          <small *ngIf="msgModel?.errors?.['required']">Feedback is required.</small>
+        </div>
+      </div>
+
+      <!-- ACTIONS & MESSAGES -->
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit" [disabled]="posting || reviewForm.invalid">
+          {{ posting ? 'Sending…' : 'Send feedback' }}
+        </button>
+        <button class="btn btn-outline" type="button" (click)="resetForm()" [disabled]="posting">Reset</button>
+      </div>
+
+      <div class="form-message" *ngIf="success" role="status" aria-live="polite">
+        <div class="msg success">{{ success }}</div>
+      </div>
+      <div class="form-message" *ngIf="error" role="alert" aria-live="assertive">
+        <div class="msg error">{{ error }}</div>
+      </div>
+    </form>
+  </div>
 </div>

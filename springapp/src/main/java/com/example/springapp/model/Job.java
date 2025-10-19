@@ -1,7 +1,12 @@
 package com.example.springapp.model;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "jobs")
@@ -14,55 +19,92 @@ public class Job {
     @Column(nullable = false)
     private String title;
 
-    @Column(length = 4000)
-    private String description;
-
+    @Column(nullable = false)
     private String location;
 
-    private String employmentType; // e.g. "Full-time", "Part-time", "Contract"
+    @Column(columnDefinition = "text")
+    private String description;
 
-    @Column(name = "is_active")
-    private boolean isActive = true;
+    private Integer minExp;
+    private Integer maxExp;
+    private Integer minSalary;
+    private Integer maxSalary;
 
-    @Column(name = "posted_at")
-    private LocalDateTime postedAt = LocalDateTime.now();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "company_id")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "company_id", nullable = false)
     private Company company;
 
-    // user who posted the job (recruiter)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "posted_by")
-    private User postedBy;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "recruiter_id", nullable = false)
+    private Recruiter recruiter;
 
-    public Job() {}
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Instant createdAt;
 
-    // Getters & setters (IDE can generate)
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @ElementCollection
+    @CollectionTable(name = "job_responsibilities", joinColumns = @JoinColumn(name = "job_id"))
+    @Column(name = "responsibility", columnDefinition = "text")
+    private List<String> responsibilities = new ArrayList<>();
+
+    private String employmentType;
+    private String category;
+
+    // ✅ NEW FIELD
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive = true;
+
+    // ------------------------------- Getters / Setters -------------------------------
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
     public String getLocation() { return location; }
     public void setLocation(String location) { this.location = location; }
 
-    public String getEmploymentType() { return employmentType; }
-    public void setEmploymentType(String employmentType) { this.employmentType = employmentType; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
 
-    public boolean isActive() { return isActive; }
-    public void setActive(boolean active) { isActive = active; }
+    public Integer getMinExp() { return minExp; }
+    public void setMinExp(Integer minExp) { this.minExp = minExp; }
 
-    public LocalDateTime getPostedAt() { return postedAt; }
-    public void setPostedAt(LocalDateTime postedAt) { this.postedAt = postedAt; }
+    public Integer getMaxExp() { return maxExp; }
+    public void setMaxExp(Integer maxExp) { this.maxExp = maxExp; }
+
+    public Integer getMinSalary() { return minSalary; }
+    public void setMinSalary(Integer minSalary) { this.minSalary = minSalary; }
+
+    public Integer getMaxSalary() { return maxSalary; }
+    public void setMaxSalary(Integer maxSalary) { this.maxSalary = maxSalary; }
 
     public Company getCompany() { return company; }
     public void setCompany(Company company) { this.company = company; }
 
-    public User getPostedBy() { return postedBy; }
-    public void setPostedBy(User postedBy) { this.postedBy = postedBy; }
+    public Recruiter getRecruiter() { return recruiter; }
+    public void setRecruiter(Recruiter recruiter) { this.recruiter = recruiter; }
+
+    public Instant getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public Instant getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Instant updatedAt) { this.updatedAt = updatedAt; }
+
+    public List<String> getResponsibilities() { return responsibilities; }
+    public void setResponsibilities(List<String> responsibilities) { this.responsibilities = responsibilities; }
+
+    public String getEmploymentType() { return employmentType; }
+    public void setEmploymentType(String employmentType) { this.employmentType = employmentType; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
+
+    public Boolean getIsActive() { return isActive; }
+    public void setIsActive(Boolean isActive) { this.isActive = isActive; }
 }

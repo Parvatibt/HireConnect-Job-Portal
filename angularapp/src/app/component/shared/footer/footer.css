@@ -1,20 +1,24 @@
-/* footer.css */
+/* footer.css — unchanged visually, now correctly pushed to bottom */
+
 .dashboard-footer {
   background: #0b1220;
   color: #e6eefb;
   padding: 28px 24px;
   box-sizing: border-box;
   width: 100%;
-  /* keep footer above other content if needed */
   z-index: 100;
+
+  /* ✅ Add these two lines to ensure footer stays at bottom */
+  position: relative;
+  margin-top: auto;
 }
 
 /* container */
 .footer-inner {
   max-width: 1200px;
   margin: 0 auto;
-  display:flex;
-  align-items:center;
+  display: flex;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   box-sizing: border-box;
@@ -27,7 +31,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 24px;
   font-weight: 700;
-  gap: 8px; /* spacing between icon and text */
+  gap: 8px;
 }
 
 /* icon color */
@@ -38,28 +42,38 @@
 }
 
 /* text */
-.logo-footer .logo-text { display:inline-block; line-height:1; }
-.logo-footer .logo-hire { color: white; margin-right: 0; }
-.logo-footer .logo-connect { color: hwb(242 0% 10%); }
+.logo-footer .logo-text {
+  display: inline-block;
+  line-height: 1;
+}
+.logo-footer .logo-hire {
+  color: white;
+  margin-right: 0;
+}
+.logo-footer .logo-connect {
+  color: hwb(242 0% 10%);
+}
 
-/* copyright under logo — keep small and slightly separate */
+/* copyright under logo */
 .footer-note {
-  color: rgba(255,255,255,0.75);
+  color: rgba(255, 255, 255, 0.75);
   font-size: 13px;
   margin-top: 6px;
-  /* ensure it wraps nicely when horizontal space is tight */
   white-space: nowrap;
 }
 
 /* right nav links */
 .footer-nav a {
   margin-left: 14px;
-  color: rgba(255,255,255,0.9);
-  text-decoration:none;
-  font-weight:600;
-  transition: color .16s ease, transform .12s ease;
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.16s ease, transform 0.12s ease;
 }
-.footer-nav a:hover { color: #ffffff; transform: translateY(-2px); }
+.footer-nav a:hover {
+  color: #ffffff;
+  transform: translateY(-2px);
+}
 
 /* responsive */
 @media (max-width: 820px) {
@@ -69,6 +83,11 @@
     gap: 8px;
     text-align: center;
   }
-  .footer-nav a { margin-left: 0; margin-right: 14px; }
-  .footer-note { margin-top: 4px; }
+  .footer-nav a {
+    margin-left: 0;
+    margin-right: 14px;
+  }
+  .footer-note {
+    margin-top: 4px;
+  }
 }

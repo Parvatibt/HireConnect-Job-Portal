@@ -1,11 +1,9 @@
-<!-- landing-page.html -->
-<!-- HERO (background image) -->
+<!-- src/app/component/public/landing/landing-page.html -->
 <div class="landing-root">
   <div class="overlay"></div>
 
   <header class="hero" role="banner" aria-label="HireConnect hero">
     <div class="hero-inner">
-      <!-- Left: Search block -->
       <div class="search-block">
         <h1 class="hero-title">Your dream job is just a search away</h1>
         <p class="hero-sub">Discover companies that value your skills and passion.</p>
@@ -22,15 +20,15 @@
           </div>
 
           <div class="input-wrap input-location">
-            <select name="location" [(ngModel)]="query.location" aria-label="Location">
-              <option value="">Location</option>
+            <select name="location" [(ngModel)]="query.location" aria-label="Location" (change)="onSearch()">
+              <option value="">Any location</option>
               <option *ngFor="let l of locations" [value]="l">{{ l }}</option>
             </select>
           </div>
 
           <div class="input-wrap input-category">
-            <select name="category" [(ngModel)]="query.category" aria-label="Category">
-              <option value="">Category</option>
+            <select name="category" [(ngModel)]="query.category" aria-label="Category" (change)="onSearch()">
+              <option value="">Any category</option>
               <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
             </select>
           </div>
@@ -43,20 +41,75 @@
         <div class="trending" aria-hidden="false">
           <span class="trending-label">Trending Keywords:</span>
           <div class="trending-list">
-            <button *ngFor="let t of trending" type="button" class="tag" (click)="query.title = t" aria-label="Use trending keyword">
+            <button *ngFor="let t of ['DESIGNER','PHP','DEVELOPER','iOS DEVELOPER','WEB']"
+                    type="button"
+                    class="tag"
+                    (click)="query.title = t; onSearch()">
               {{ t }}
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Right: optional illustration / promo -->
-      <div class="hero-right" aria-hidden="true">
-        <!-- Illustration or image may go here if desired -->
-      </div>
+      <div class="hero-right" aria-hidden="true"></div>
     </div>
   </header>
 </div>
+
+<!-- RESULTS: only shown after user has searched (searched === true) -->
+<section class="search-results" *ngIf="searched && filteredJobs.length > 0">
+  <div class="section-inner">
+    <div class="results-top d-flex align-items-center justify-content-between">
+      <h2>Jobs</h2>
+      <div class="results-count">{{ filteredJobs.length }} result{{ filteredJobs.length === 1 ? '' : 's' }}</div>
+    </div>
+
+    <div class="cards">
+      <article class="job-card" *ngFor="let job of filteredJobs; trackBy: trackByJobId">
+        <div class="job-card-left">
+          <h3 class="job-title">{{ job.title }}</h3>
+          <p class="job-meta">
+            <!-- fixed expression: use optional chaining and typeof check (no "as any") -->
+            <strong>
+              {{ job.company?.name || job.companyName || (typeof job.company === 'string' ? job.company : '—') }}
+            </strong>
+            <span *ngIf="job.location"> • {{ job.location }}</span>
+          </p>
+          <p class="job-desc">
+            {{ job.shortDescription || (job.description ? (job.description | slice:0:160) : '') }}
+            <span *ngIf="(job.description || '').length > 160">…</span>
+          </p>
+        </div>
+
+        <div class="job-card-right">
+          <a [routerLink]="['/jobs', job.id]" class="btn-view" aria-label="View job details">View Details</a>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- No results message after user searched -->
+<section class="no-results" *ngIf="searched && !loading && filteredJobs.length === 0">
+  <div class="section-inner">
+    <p>No jobs found — try different filters or search terms.</p>
+    <div style="margin-top:12px;">
+      <button class="btn btn-outline" (click)="clearFilters()">Clear filters</button>
+    </div>
+  </div>
+</section>
+
+<!-- Loading -->
+<section class="loading" *ngIf="loading">
+  <div class="section-inner">
+    <p>Loading jobs…</p>
+  </div>
+</section>
+
+<!-- Rest of landing page sections (features, stats, etc.) remain unchanged -->
+<!-- ... -->
+
+
 
 <!-- BELOW HERO: sections on full-width gray background but centered content -->
 
@@ -94,29 +147,50 @@
   </div>
 </section>
 
+
 <!-- Statistics -->
 <section class="stats" aria-labelledby="stats-heading">
   <div class="section-inner">
     <div class="stats-container" id="stats-heading" role="list">
-      <div class="stat-item" role="listitem">
-        <h3>5K+</h3>
-        <p>Active Jobs</p>
+
+      <!-- Loading state -->
+      <ng-container *ngIf="statsLoading">
+        <div class="stat-item" role="listitem"><h3>…</h3><p>Active Jobs</p></div>
+        <div class="stat-item" role="listitem"><h3>…</h3><p>Companies</p></div>
+        <div class="stat-item" role="listitem"><h3>…</h3><p>Job Seekers</p></div>
+        <div class="stat-item" role="listitem"><h3>…</h3><p>Success Rate</p></div>
+      </ng-container>
+
+      <!-- Error state -->
+      <div class="stat-item" *ngIf="!statsLoading && statsError" role="listitem" style="grid-column: 1 / -1;">
+        <h3 style="margin:0;">⚠️</h3>
+        <p>{{ statsError }}</p>
       </div>
-      <div class="stat-item" role="listitem">
-        <h3>1K+</h3>
-        <p>Companies</p>
-      </div>
-      <div class="stat-item" role="listitem">
-        <h3>1K+</h3>
-        <p>Job Seekers</p>
-      </div>
-      <div class="stat-item" role="listitem">
-        <h3>95%</h3>
-        <p>Success Rate</p>
-      </div>
+
+      <!-- Data state -->
+      <ng-container *ngIf="!statsLoading && !statsError && stats">
+        <div class="stat-item" role="listitem">
+          <h3>{{ formatCompact(stats.activeJobs) }}</h3>
+          <p>Active Jobs</p>
+        </div>
+        <div class="stat-item" role="listitem">
+          <h3>{{ formatCompact(stats.companies) }}</h3>
+          <p>Companies</p>
+        </div>
+        <div class="stat-item" role="listitem">
+          <h3>{{ formatCompact(stats.jobSeekers) }}</h3>
+          <p>Job Seekers</p>
+        </div>
+        <div class="stat-item" role="listitem">
+          <h3>{{ formatPercent(stats.successRate) }}</h3>
+          <p>Success Rate</p>
+        </div>
+      </ng-container>
+
     </div>
   </div>
 </section>
+
 
 <!-- Call To Action -->
 <section class="cta" role="region" aria-labelledby="cta-heading">
@@ -135,30 +209,33 @@
 
 
 <!-- Reviews (separate section, not in footer) -->
+<!-- Reviews (separate section, not in footer) -->
 <section class="reviews" aria-labelledby="reviews-heading">
   <div class="section-inner">
     <h2 id="reviews-heading">What People Say</h2>
     <p>Real feedback from professionals who found opportunities with HireConnect</p>
 
-    <div class="reviews-grid">
-      <div class="review-card">
-        <p class="review-text">“Found my dream role in two weeks — the process was smooth and recruiters were responsive.”</p>
-        <div class="review-meta">— Sarah J., Product Designer</div>
+    <!-- Loading / error states -->
+    <div *ngIf="reviewsLoading">Loading reviews…</div>
+    <div *ngIf="!reviewsLoading && reviewsError" class="text-error">{{ reviewsError }}</div>
+
+    <!-- Top 3 recent reviews -->
+    <ng-container *ngIf="!reviewsLoading && !reviewsError">
+      <div class="reviews-grid" *ngIf="reviewsTop.length > 0; else noReviews">
+        <article class="review-card" *ngFor="let r of reviewsTop; trackBy: trackByReview">
+          <p class="review-text">“{{ r.message }}”</p>
+          <div class="review-meta">
+            — {{ r.name }}<span *ngIf="r.designation">, {{ r.designation }}</span>
+          </div>
+        </article>
       </div>
 
-      <div class="review-card">
-        <p class="review-text">“Great candidates and fast hiring pipeline. We hired two engineers in a month.”</p>
-        <div class="review-meta">— Acme Corp (Hiring Manager)</div>
-      </div>
-
-      <div class="review-card">
-        <p class="review-text">“The platform helped me showcase my portfolio and connect with the right companies.”</p>
-        <div class="review-meta">— Daniel K., Frontend Developer</div>
-      </div>
-    </div>
+      <ng-template #noReviews>
+        <p>No reviews yet. Be the first to share your experience!</p>
+      </ng-template>
+    </ng-container>
   </div>
 </section>
-
 
 <section class="feedback">
   <div class="section-inner feedback-content">
@@ -175,10 +252,24 @@
     <!-- Right side -->
     <div class="feedback-right">
       <h3>Recent feedback</h3>
-      <p>“Quick hiring process — great experience.” — Anna P.</p>
-      <p>“Better filters would help, overall great.” — Marcus T.</p>
-      <p>“Found a role within 2 weeks.” — Lina R.</p>
+
+      <!-- Loading / error states -->
+      <div *ngIf="reviewsLoading">Loading recent feedback…</div>
+      <div *ngIf="!reviewsLoading && reviewsError" class="text-error">{{ reviewsError }}</div>
+
+      <ul *ngIf="!reviewsLoading && !reviewsError && reviewsRecent.length > 0" class="recent-list">
+        <li *ngFor="let r of reviewsRecent | slice:0:4; trackBy: trackByReview">
+          “{{ r.message }}” — {{ r.name }}
+        </li>
+      </ul>
+
+
+      <p *ngIf="!reviewsLoading && !reviewsError && reviewsRecent.length === 0">No recent feedback yet.</p>
+
       <a routerLink="/review-list">See all reviews for more feedback.</a>
     </div>
   </div>
 </section>
+
+
+

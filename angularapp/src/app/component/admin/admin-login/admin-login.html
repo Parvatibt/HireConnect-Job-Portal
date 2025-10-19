@@ -1,29 +1,51 @@
-<div class="neon-page">
+<!-- src/app/component/admin/admin-login/admin-login.html -->
+<div class="neon-page" role="main" aria-labelledby="admin-login-heading">
   <div class="neon-wrap">
     <!-- neon frame (pure CSS using pseudo elements) -->
-    <div class="neon-frame"></div>
+    <div class="neon-frame" aria-hidden="true"></div>
 
     <!-- circular logo overlapping top -->
-    <div class="logo-circle">
+    <div class="logo-circle" aria-hidden="true">
       <img src="assets/admin-logo.jpg" alt="Admin Logo" />
     </div>
 
     <!-- card -->
-    <div class="login-card">
-      <h2 class="card-heading">Admin Login</h2>
-      <form (ngSubmit)="onLogin()" class="login-form" #f="ngForm">
-        <!-- Username (plain placeholder visible) -->
+    <div class="login-card" role="region" aria-describedby="admin-login-desc">
+      <h2 id="admin-login-heading" class="card-heading">Admin Login</h2>
+      <p id="admin-login-desc" class="sr-only">
+        Enter admin credentials to access the admin dashboard.
+      </p>
+
+      <form
+        (ngSubmit)="onLogin()"
+        class="login-form"
+        #f="ngForm"
+        novalidate
+        autocomplete="on"
+        aria-live="polite"
+      >
+        <!-- Username -->
+        <label class="label" for="admin-username">Username</label>
         <input
+          id="admin-username"
           name="username"
           [(ngModel)]="username"
           required
           placeholder="Username"
           autocomplete="username"
           class="input"
+          [attr.aria-invalid]="f.form?.controls?.['username'] ? f.form.controls['username'].invalid : false"
         />
+        <div class="field-error" *ngIf="f.submitted || (f.form?.controls?.['username']?.touched)">
+          <small *ngIf="f.form?.controls?.['username']?.errors?.['required']">
+            Username is required.
+          </small>
+        </div>
 
-        <!-- Password (plain placeholder visible) -->
+        <!-- Password -->
+        <label class="label" for="admin-password">Password</label>
         <input
+          id="admin-password"
           name="password"
           type="password"
           [(ngModel)]="password"
@@ -31,10 +53,50 @@
           placeholder="Password"
           autocomplete="current-password"
           class="input"
+          [attr.aria-invalid]="f.form?.controls?.['password'] ? f.form.controls['password'].invalid : false"
         />
+        <div class="field-error" *ngIf="f.submitted || (f.form?.controls?.['password']?.touched)">
+          <small *ngIf="f.form?.controls?.['password']?.errors?.['required']">
+            Password is required.
+          </small>
+        </div>
 
-        <button class="btn" type="submit">Login</button>
+        <!-- Button: only disabled while loading so user can submit and see validation -->
+        <button
+          class="btn"
+          type="submit"
+          [disabled]="isLoading"
+          [attr.aria-disabled]="isLoading"
+          [attr.aria-busy]="isLoading"
+        >
+          <span class="btn-label" *ngIf="!isLoading">Login</span>
+
+          <!-- accessible spinner (positioned so it doesn't hide the text) -->
+          <span
+            *ngIf="isLoading"
+            class="spinner"
+            role="status"
+            aria-live="polite"
+            aria-label="Signing in"
+          >
+            <svg width="18" height="18" viewBox="0 0 50 50" focusable="false" aria-hidden="true">
+              <circle cx="25" cy="25" r="20"></circle>
+            </svg>
+            <span class="visually-hidden">Signing in…</span>
+          </span>
+        </button>
       </form>
+
+      <!-- Inline feedback -->
+      <p
+        class="message"
+        [ngClass]="{ error: isError, success: !isError && message }"
+        *ngIf="message"
+        role="status"
+        aria-live="polite"
+      >
+        {{ message }}
+      </p>
     </div>
   </div>
 </div>

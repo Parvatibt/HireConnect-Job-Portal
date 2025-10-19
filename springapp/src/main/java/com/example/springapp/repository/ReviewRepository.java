@@ -1,16 +1,15 @@
 package com.example.springapp.repository;
 
 import com.example.springapp.model.Review;
-import org.springframework.data.jpa.repository.*;
-import org.springframework.data.repository.query.Param;
-import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
+import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
-    Page<Review> findByApproved(boolean approved, Pageable pageable);
-    
+    // return reviews ordered by id desc (newest first) with paging
+    Page<Review> findAllByOrderByIdDesc(Pageable pageable);
 
-    @Query("SELECT r FROM Review r WHERE r.company.id = :companyId")
-    Page<Review> findByCompanyId(@Param("companyId") Long companyId, Pageable pageable);
-
+    // list pending reviews (newest first)
+    List<Review> findByStatusOrderByIdDesc(String status);
 }

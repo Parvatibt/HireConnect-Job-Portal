@@ -1,11 +1,46 @@
-<app-admin-sidebar></app-admin-sidebar>
+
 <div class="admin-content-wrapper">
   <div class="admin-content-card">
-    <h2>Reviews Moderation</h2>
-    <div *ngFor="let review of reviews" class="review">
-      <p>{{ review.content }}</p>
-      <button>Approve</button>
-      <button>Reject</button>
+    <h2>Review Moderation</h2>
+
+    <div class="toolbar">
+      <button class="btn primary" (click)="loadPending()" [disabled]="loading">Refresh</button>
+      <button class="btn" (click)="approveAllVisible()" [disabled]="loading || reviews.length===0">Approve All Visible</button>
+      <div class="spacer"></div>
+      <div *ngIf="loading" class="muted">Loading pending reviews…</div>
     </div>
+
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div *ngIf="!loading && reviews.length === 0" class="empty">
+      No pending reviews.
+    </div>
+
+    <ul *ngIf="reviews.length > 0" class="review-list">
+      <li *ngFor="let r of reviews" class="review-item">
+        <div class="review-main">
+          <div class="review-meta">
+            <strong class="review-name">{{ r.name }}</strong>
+            <span *ngIf="r.designation" class="review-designation"> — {{ r.designation }}</span>
+            <span *ngIf="r.createdAt" class="review-date"> • {{ r.createdAt | date:'medium' }}</span>
+          </div>
+          <div class="review-message">{{ r.message }}</div>
+        </div>
+
+        <div class="review-actions">
+          
+
+          <button class="action-btn action-approve" (click)="approve(r)" [disabled]="isActionLoading(r.id)">
+            <span *ngIf="!isActionLoading(r.id)">Approve</span>
+            <span *ngIf="isActionLoading(r.id)">Processing…</span>
+          </button>
+          <button class="btn danger" (click)="reject(r)" [disabled]="isActionLoading(r.id)">
+            <span *ngIf="!isActionLoading(r.id)">Reject</span>
+            <span *ngIf="isActionLoading(r.id)">Processing…</span>
+          </button>
+        </div>
+      </li>
+    </ul>
   </div>
 </div>
+

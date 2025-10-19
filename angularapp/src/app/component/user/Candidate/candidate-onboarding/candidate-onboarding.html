@@ -1,0 +1,92 @@
+<div class="onboard container" style="min-height: calc(100vh - 160px); padding: 36px;">
+  <div class="card" style="max-width:900px; margin: 0 auto; padding: 28px; background:#fbfdff; box-shadow: 0 6px 24px rgba(0,0,0,0.06); border-radius:12px;">
+    <h2 style="margin-top:0;">{{ step === 1 ? 'Complete your Candidate Profile' : 'Edit your Candidate Profile' }}</h2>
+
+    <div class="steps" style="margin-bottom:18px; display:flex; gap:8px;">
+      <button type="button" class="step-btn" [class.active]="step===1">1. Basic</button>
+      <button type="button" class="step-btn" [class.active]="step===2">2. Education</button>
+      <button type="button" class="step-btn" [class.active]="step===3">3. Resume</button>
+    </div>
+
+    <!-- STEP 1 -->
+    <div *ngIf="step===1" class="step">
+      <form [formGroup]="basicForm" (ngSubmit)="saveBasic()" novalidate>
+        <div class="form-group"><label>Full name *</label>
+          <input formControlName="fullName" class="form-control" placeholder="Full name" />
+        </div>
+
+        <div class="form-group"><label>Phone *</label>
+          <input formControlName="phone" class="form-control" placeholder="Phone" />
+        </div>
+
+        <div class="form-group"><label>Location *</label>
+          <input formControlName="location" class="form-control" placeholder="Location" />
+        </div>
+
+        <div class="form-group"><label>Pin / Postal Code *</label>
+          <input formControlName="pinCode" class="form-control" placeholder="Pin / Postal code" />
+        </div>
+
+        <div class="form-group"><label>Headline</label>
+          <input formControlName="headline" class="form-control" placeholder="e.g. Software Engineer" />
+        </div>
+
+        <div class="form-group"><label>Skills (comma separated)</label>
+          <input formControlName="skills" class="form-control" placeholder="e.g. Java, Angular, SQL" />
+        </div>
+
+        <div style="margin-top:14px;">
+          <button class="btn btn-primary" type="submit" [disabled]="saving">{{ saving ? 'Saving…' : 'Next' }}</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 2 -->
+    <div *ngIf="step===2" class="step">
+      <h3>Education</h3>
+      <form [formGroup]="educationForm" (ngSubmit)="saveEducation()" novalidate>
+        <div formArrayName="educations" class="education-list">
+          <div *ngFor="let ed of educations.controls; let i=index" [formGroupName]="i" class="education-item" style="margin-bottom:12px; border-bottom:1px dashed #eee; padding-bottom:10px;">
+            <input formControlName="institute" class="form-control" placeholder="Institute" />
+            <input formControlName="degree" class="form-control" placeholder="Degree" />
+            <input formControlName="fieldOfStudy" class="form-control" placeholder="Field of study (optional)" />
+            <div class="edu-actions" style="margin-top:8px;">
+              <button type="button" (click)="removeEducation(i)" [disabled]="educations.length<=1" class="btn btn-sm">Remove</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls" style="display:flex; gap:8px; align-items:center; margin-top:12px;">
+          <button type="button" class="btn btn-outline" (click)="addEducation()">Add Education</button>
+          <button type="submit" class="btn btn-primary" [disabled]="saving">{{ saving ? 'Saving…' : 'Next' }}</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- STEP 3 -->
+    <div *ngIf="step===3" class="step">
+      <h3>Upload Resume</h3>
+
+      <div *ngIf="resumeUrl" class="mb-3">
+        <p>Your current resume:</p>
+        <a [href]="resumeUrl" target="_blank" rel="noopener" class="btn btn-outline-secondary btn-sm">View Current Resume</a>
+      </div>
+
+      <div class="file-row" style="display:flex; gap:10px; align-items:center;">
+        <input id="resumeFile" type="file" (change)="onFileSelected($event)" accept=".pdf,.doc,.docx" />
+        <button class="btn btn-primary" (click)="uploadResume()" [disabled]="isUploading">{{ isUploading ? 'Uploading…' : 'Finish' }}</button>
+      </div>
+    </div>
+
+    <div class="error" *ngIf="error" style="color:#b00020; margin-top:14px;">{{ error }}</div>
+  </div>
+</div>
+
+<style>
+  .form-control { width:100%; padding:10px; margin:8px 0; border:1px solid #e4e7eb; border-radius:6px; }
+  .btn { padding:8px 14px; border-radius:8px; border:none; cursor:pointer; }
+  .btn-primary { background:#1976d2; color:white; }
+  .btn-outline { background:transparent; border:1px solid #1976d2; color:#1976d2; }
+  .step-btn { background:#f0f6fb; border:none; padding:8px 12px; border-radius:20px; }
+  .step-btn.active { background:#1976d2; color:white; }
+</style>

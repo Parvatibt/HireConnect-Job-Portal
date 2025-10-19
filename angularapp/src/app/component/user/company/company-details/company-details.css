@@ -1,0 +1,192 @@
+/* ===== company-details.css — updated ===== */
+
+/* page padding top to avoid navbar overlap:
+   adjust 90px if your navbar is taller/shorter */
+.company-details-page {
+  padding-top: 90px; /* ensures header won't overlap with sticky navbar */
+  background: linear-gradient(180deg, #f8fbff 0%, #f6f9ff 100%);
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: Inter, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* center container and limit width */
+.page-container {
+  max-width: 900px;    /* decreased width for a narrower, cleaner card */
+  margin: 20px auto 60px; /* top gap + bottom extra */
+  padding: 0 18px;
+  box-sizing: border-box;
+}
+
+/* header: left content grows, cancel on the right with space */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+.header-left {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.page-title {
+  margin: 0;
+  font-size: 1.45rem;
+  color: #0b254d;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+.muted {
+  margin: 6px 0 0 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+  margin-bottom: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* header-actions (right) keep consistent spacing */
+.header-actions { flex: 0 0 auto; display: flex; gap: 10px; align-items: center; }
+
+/* ghost cancel button */
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(11,37,77,0.08);
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 700;
+  color: #0b254d;
+}
+.btn-ghost:hover { background: rgba(11,37,77,0.03); transform: translateY(-1px); }
+
+/* grid: single column now (no right panel) */
+.company-grid { display: block; }
+
+/* form card — narrower, centered visually because container is limited */
+.form-panel {
+  background: #ffffff;
+  padding: 18px;
+  border-radius: 14px;
+  box-shadow: 0 14px 40px rgba(10,20,40,0.06);
+  border: 1px solid rgba(11,37,77,0.03);
+  transition: transform .12s ease;
+  position: relative;
+}
+
+/* LOGO CARD — more compact, uses space efficiently */
+.logo-card {
+  background: linear-gradient(180deg, #fbfdff, #ffffff);
+  border: 1px solid rgba(37,99,235,0.06);
+  box-shadow: 0 8px 24px rgba(37,99,235,0.04);
+  padding: 12px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+/* logo preview smaller height but uses horizontal space efficiently */
+.logo-preview-wrap,
+.logo-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 110px;           /* reduced height from 140 to 110 */
+  margin-bottom: 10px;
+}
+.logo-preview {
+  max-width: 140px;
+  max-height: 100px;
+  border-radius: 12px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid rgba(14,30,60,0.06);
+  padding: 6px;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s;
+}
+.logo-preview:hover { transform: scale(1.04); box-shadow: 0 10px 30px rgba(37,99,235,0.12); }
+.placeholder-text { color: #64748b; font-weight: 700; margin-top: 6px; }
+
+/* upload row (compact) */
+.upload-row { display:flex; justify-content:center; align-items:center; gap: 8px; }
+.btn-upload {
+  display:inline-flex; align-items:center; gap:8px;
+  padding: 8px 12px;
+  background: linear-gradient(90deg,#06b6d4,#3b82f6);
+  color: white; font-weight: 700;
+  border-radius: 10px; border: none; cursor: pointer;
+  box-shadow: 0 8px 20px rgba(59,130,246,0.12);
+}
+.btn-upload:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(59,130,246,0.14); }
+
+/* form groups */
+.form-section { margin-bottom: 12px; }
+.label { display:block; font-weight: 800; margin-bottom: 8px; color: #0b254d; font-size: 0.95rem; }
+.input, .textarea, select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(14,30,60,0.06);
+  font-size: 0.95rem;
+  box-sizing: border-box;
+  background: linear-gradient(180deg,#fff,#fbfdff);
+  transition: box-shadow .12s, border-color .12s, transform .06s;
+}
+.input:focus, .textarea:focus { box-shadow: 0 12px 32px rgba(37,99,235,0.06); border-color: rgba(37,99,235,0.28); transform: translateY(-1px); }
+.textarea { min-height: 100px; resize: vertical; }
+
+.two-cols { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.social-row { display:grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+
+/* alerts and messages */
+.alert { margin-top: 12px; padding: 10px 12px; border-radius: 8px; font-weight:700; }
+.alert.error { background: linear-gradient(180deg,#fff5f5,#fff7f7); color: #c2410c; border: 1px solid rgba(194,65,12,0.06); }
+.alert.success { background: linear-gradient(180deg,#f0fdf4,#f8fff7); color: #065f46; border: 1px solid rgba(6,95,70,0.06); }
+
+/* sticky bottom form actions */
+.form-actions {
+  margin-top: 18px;
+  position: sticky;
+  bottom: 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(248,251,255,0.98));
+  padding: 10px 6px;
+  border-top: 1px solid rgba(14,30,60,0.04);
+  display:flex; justify-content:flex-end; gap:10px;
+  border-radius: 0 0 12px 12px;
+  z-index: 28;
+}
+.btn-primary {
+  background: linear-gradient(90deg,#2563eb,#3b82f6);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: none; font-weight: 800; cursor: pointer;
+  box-shadow: 0 8px 22px rgba(37,99,235,0.12);
+}
+.btn-primary[disabled] { opacity: 0.6; cursor:not-allowed; }
+
+/* accessible focus ring */
+:focus { outline: 3px solid rgba(37,99,235,0.08); outline-offset: 2px; }
+
+/* small screens */
+@media (max-width: 780px) {
+  .page-container { padding: 0 14px; margin-top: 12px; }
+  .page-title { font-size: 1.25rem; }
+  .muted { white-space: normal; overflow: visible; }
+  .two-cols { grid-template-columns: 1fr; gap: 10px; }
+  .social-row { grid-template-columns: 1fr; }
+  .logo-preview { max-width: 110px; max-height: 90px; }
+  .logo-preview-wrap, .logo-placeholder { height: 90px; }
+  .form-actions { position: static; padding: 14px 0; justify-content: center; }
+  .btn-primary { width: 94%; max-width: 520px; border-radius: 12px; }
+}
+
+/* very narrow phones */
+@media (max-width: 420px) {
+  .page-container { padding: 0 10px; }
+  .btn-upload { padding: 8px 10px; }
+  .btn-ghost { padding: 6px 10px; }
+}

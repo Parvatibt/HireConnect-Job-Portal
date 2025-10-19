@@ -1,12 +1,15 @@
-import { Job } from './job.model';
-import { User } from './user.model';
-
+// src/app/model/application.model.ts
 export interface Application {
-  id?: number;
-  job: Job;
-  candidate: User;
-  appliedAt?: string;
-  status?: 'SUBMITTED' | 'REVIEWED' | 'REJECTED' | 'ACCEPTED';
-  resumeUrl?: string;
-  coverLetter?: string;
+  // Backend DTO fields (server expects these names)
+  jobId?: number;
+  candidateName?: string;
+  candidateEmail?: string;
+  candidatePhone?: string;
+  resumeFilename?: string;
+
+  // Template-friendly aliases
+  name?: string;   // maps -> candidateName
+  email?: string;  // maps -> candidateEmail
+  phone?: string;  // maps -> candidatePhone
+  resume?: string; // maps -> resumeFilename
 }

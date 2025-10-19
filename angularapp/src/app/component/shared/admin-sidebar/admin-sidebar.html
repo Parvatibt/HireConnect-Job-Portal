@@ -1,17 +1,21 @@
 <nav class="admin-sidebar" role="navigation" aria-label="Admin Sidebar">
-
   <div class="sidebar-header">Admin Panel</div>
 
+
+
   <div class="sidebar-actions">
-    <button class="sidebar-action-btn" routerLink="/admin" routerLinkActive="active">Dashboard</button>
-    <button class="sidebar-action-btn" routerLink="/admin/manage-companies" routerLinkActive="active">Companies</button>
-    <button class="sidebar-action-btn" routerLink="/admin/manage-jobs" routerLinkActive="active">Jobs</button>
-    <button class="sidebar-action-btn" routerLink="/admin/manage-users" routerLinkActive="active">Users</button>
-    <button class="sidebar-action-btn" routerLink="/admin/reviews-moderation" routerLinkActive="active">Reviews</button>
+    <button
+      class="sidebar-action-btn"
+      *ngFor="let link of filteredLinks"
+      [routerLink]="link.path"
+      routerLinkActive="active"
+    >
+      <i [class]="link.icon"></i> {{ link.label }}
+    </button>
   </div>
 
   <div class="sidebar-bottom">
-    <button class="sidebar-logout-btn">Logout</button>
+    <button class="sidebar-logout-btn" (click)="logout()">Logout</button>
     <div class="sidebar-footer">&copy; {{ year }} HireConnect</div>
   </div>
 </nav>

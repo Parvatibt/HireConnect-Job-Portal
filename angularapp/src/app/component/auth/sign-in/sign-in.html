@@ -4,7 +4,7 @@
   <section class="hero">
     <div class="hero-left">
       <h1 class="hero-title">Your dream Job</h1>
-  <h2 class="hero-sub" style="color: #ff5b62;">Is Near to You</h2>
+      <h2 class="hero-sub" style="color: #ff5b62;">Is Near to You</h2>
     </div>
 
     <div class="hero-right">
@@ -15,8 +15,8 @@
   <!-- LOGIN CARD area -->
   <section class="login-section" >
     <h2 class="login-title" >WELCOME BACK! <span style="color: #185dc5;"> LOGIN HERE</span> </h2>
-    
-      <!-- Role selector -->
+
+    <!-- Role selector -->
     <div class="role-container">
       <label class="role-label">I am a:</label>
       <div class="role-buttons">
@@ -40,7 +40,6 @@
       </div>
     </div>
 
-
     <!-- Form -->
     <form class="login-form" (ngSubmit)="onSubmit()" #loginForm="ngForm" novalidate>
       <div class="field">
@@ -49,7 +48,7 @@
           <input
             name="username"
             class="input"
-            placeholder="Username"
+            placeholder="Username or email"
             [(ngModel)]="username"
             required
             #u="ngModel"
@@ -77,15 +76,26 @@
       <div class="options-row">
         <label class="remember">
           <input type="checkbox" name="remember" [(ngModel)]="remember" />
-          <span>Save password</span>
+          <span>Remember username</span>
         </label>
 
         <a class="forgot" href="/forgot-password">Forgot Password?</a>
       </div>
 
-      <button class="btn-login" type="submit" [disabled]="!loginForm.form.valid">
-        LOGIN
+      <!-- in-page message (no alert) -->
+      <div *ngIf="message" class="message" [ngClass]="{ 'error': isError, 'success': !isError }" style="margin:12px 0;">
+        {{ message }}
+      </div>
+
+      <button class="btn-login" type="submit" [disabled]="!loginForm.form.valid || isLoading">
+        {{ isLoading ? 'Signing in…' : 'LOGIN' }}
+   
+
       </button>
+
+         <div class="role-picked-hint">
+      Logging in as: <strong>{{ role | titlecase }}</strong>
+    </div>
 
       <p class="signup">
         Haven't Any Account Yet?

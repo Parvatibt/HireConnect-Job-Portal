@@ -1,0 +1,121 @@
+<div class="container my-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0" style="color: rgba(22, 168, 231, 0.788);">Post a Job</h2>
+    <a class="btn btn-outline-secondary" routerLink="/recruiter">Back to Recruiter</a>
+  </div>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <form [formGroup]="form" (ngSubmit)="post()">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label">Your company name</label>
+            <input class="form-control" placeholder="Company name" formControlName="companyName" />
+            <div *ngIf="form.controls['companyName'].touched && form.controls['companyName'].invalid" class="text-danger small">
+              Company name is required.
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Job title</label>
+            <input class="form-control" placeholder="Ex. Sales manager" formControlName="title" />
+            <div *ngIf="form.controls['title'].touched && form.controls['title'].invalid" class="text-danger small">
+              Job title is required.
+            </div>
+          </div>
+
+          <!-- Category -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Category</label>
+            <select class="form-select" formControlName="category">
+              <option value="">Select category</option>
+              <option *ngFor="let c of categories" [value]="c">{{ c }}</option>
+            </select>
+            <div *ngIf="form.controls['category'].touched && form.controls['category'].invalid" class="text-danger small">
+              Category is required.
+            </div>
+          </div>
+
+          <!-- Location (free-text input) -->
+          <div class="col-12 col-md-6">
+            <label class="form-label">Job location</label>
+            <input class="form-control" placeholder="Eg. Bangalore, India — or Remote" formControlName="location" />
+            <div *ngIf="form.controls['location'].touched && form.controls['location'].invalid" class="text-danger small">
+              Location is required.
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">Work experience</label>
+            <div class="d-flex gap-2">
+              <select class="form-select" formControlName="minExp">
+                <option *ngFor="let y of years" [value]="y">{{ y }} yr</option>
+              </select>
+              <div class="to">to</div>
+              <select class="form-select" formControlName="maxExp">
+                <option *ngFor="let y of years" [value]="y">{{ y }} yr</option>
+              </select>
+            </div>
+            <div *ngIf="form.controls['minExp'].touched && form.controls['maxExp'].touched && form.controls['maxExp'].value < form.controls['minExp'].value" class="text-danger small">
+              Max experience must be ≥ Min experience.
+            </div>
+          </div>
+
+          <div class="col-12 col-md-6">
+            <label class="form-label">Salary per month</label>
+            <div class="d-flex gap-2">
+              <div class="input-group" style="flex:1;">
+                <span class="input-group-text">₹</span>
+                <input type="number" class="form-control" placeholder="Min" formControlName="minSalary" />
+              </div>
+              <div class="to">to</div>
+              <div class="input-group" style="flex:1;">
+                <span class="input-group-text">₹</span>
+                <input type="number" class="form-control" placeholder="Max" formControlName="maxSalary" />
+              </div>
+            </div>
+            <div *ngIf="form.controls['minSalary'].touched && form.controls['maxSalary'].touched && form.controls['maxSalary'].value < form.controls['minSalary'].value" class="text-danger small">
+              Max salary must be ≥ Min salary.
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Job Type</label>
+            <select class="form-select" formControlName="employmentType">
+              <option value="">Select job type</option>
+              <option *ngFor="let t of jobTypes" [value]="t">{{ t }}</option>
+            </select>
+            <div *ngIf="form.controls['employmentType'].touched && form.controls['employmentType'].invalid" class="text-danger small">
+              Job type is required.
+            </div>
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Job Description</label>
+            <textarea class="form-control" rows="7" placeholder="Describe responsibilities, skills, perks…" formControlName="description"></textarea>
+            <div *ngIf="form.controls['description'].touched && form.controls['description'].invalid" class="text-danger small">
+              Description is required (min 20 characters).
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+          <button class="btn btn-primary"
+                  style="background-color: rgba(22, 168, 231, 0.788);"
+                  type="submit" [disabled]="posting">
+            {{ posting ? 'Posting…' : 'Post Job' }}
+          </button>
+
+          <a class="btn btn-outline-secondary" routerLink="/recruiter">Cancel</a>
+        </div>
+
+        <!-- Success message exactly below Post Job button -->
+        <div *ngIf="successMessage" class="text-success mt-2" style="font-weight:700;">
+          {{ successMessage }}
+        </div>
+
+        <div *ngIf="error" class="text-danger mt-2">{{ error }}</div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,128 @@
+<div class="company-details-page">
+
+  <!-- page container keeps everything centered and prevents overlap with navbar -->
+  <div class="page-container">
+
+    <!-- header: left title+muted, right Cancel -->
+    <div class="page-header">
+      <div class="header-left">
+        <h1 class="page-title">{{ isEditMode ? 'Edit Company Profile' : 'Add Company' }}</h1>
+        <p class="muted">Complete company information. This appears on job postings and company pages.</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-ghost" (click)="cancel()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- main content: centered narrow card -->
+    <div class="company-grid">
+      <form class="form-panel" (ngSubmit)="onSubmit()" #f="ngForm" autocomplete="off" novalidate>
+
+        <!-- logo card at top of form (smaller height, uses space efficiently) -->
+        <div class="logo-card inline-logo" aria-label="Company logo upload">
+          <div class="logo-preview-wrap" *ngIf="logoPreviewUrl; else showPlaceholder">
+            <img [src]="logoPreviewUrl" alt="Logo preview" class="logo-preview" />
+          </div>
+          <ng-template #showPlaceholder>
+            <div class="logo-placeholder" aria-hidden="true">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M3 3h18v18H3z" fill="#eef2ff"/></svg>
+              <div class="placeholder-text">Logo</div>
+            </div>
+          </ng-template>
+
+          <div class="upload-row">
+            <input type="file" accept="image/*" id="logoFile" (change)="onFileSelect($event)" hidden>
+            <label for="logoFile" class="btn-upload" aria-label="Choose logo file">Choose Logo</label>
+            <button *ngIf="logoPreviewUrl" class="btn-ghost" (click)="removeLogo()">Remove</button>
+          </div>
+        </div>
+
+        <!-- form fields -->
+        <div class="form-section">
+          <label class="label">Company Name *</label>
+          <input name="name" [(ngModel)]="company.name" required minlength="2" placeholder="e.g. Acme Inc." class="input" />
+        </div>
+
+        <div class="two-cols">
+          <div class="form-section">
+            <label class="label">Industry *</label>
+            <input name="industry" [(ngModel)]="company.industry" required placeholder="e.g. Fintech" class="input" />
+          </div>
+
+          <div class="form-section">
+            <label class="label">Founded Year</label>
+            <input name="founded" type="number" min="1800" max="2100" [(ngModel)]="company.founded" class="input" />
+          </div>
+        </div>
+
+        <div class="two-cols">
+          <div class="form-section">
+            <label class="label">Company Size</label>
+            <select name="size" [(ngModel)]="company.size" class="input">
+              <option value="">Select size</option>
+              <option>1-10 employees</option>
+              <option>11-50 employees</option>
+              <option>51-200 employees</option>
+              <option>201-500 employees</option>
+              <option>501-1000 employees</option>
+              <option>1000+ employees</option>
+            </select>
+          </div>
+
+          <div class="form-section">
+            <label class="label">Website</label>
+            <input name="website" type="url" [(ngModel)]="company.website" placeholder="https://example.com" class="input" />
+          </div>
+        </div>
+
+        <div class="form-section">
+          <label class="label">Contact Email *</label>
+          <input name="email" type="email" [(ngModel)]="company.email" required placeholder="contact@company.com" class="input" />
+        </div>
+
+        <div class="form-section">
+          <label class="label">Phone</label>
+          <input name="phone" type="text" [(ngModel)]="company.phone" placeholder="+91 99999 99999" class="input" />
+        </div>
+
+        <div class="form-section">
+          <label class="label">Location *</label>
+          <input name="location" [(ngModel)]="company.location" required placeholder="City, Country" class="input" />
+        </div>
+
+        <div class="form-section">
+          <label class="label">Short Description *</label>
+          <textarea name="description" rows="3" [(ngModel)]="company.description" required placeholder="One-line summary" class="textarea"></textarea>
+        </div>
+
+        <div class="form-section">
+          <label class="label">About Company</label>
+          <textarea name="about" rows="6" [(ngModel)]="company.about" placeholder="More details about culture, values, perks..." class="textarea"></textarea>
+        </div>
+
+        <div class="form-section socials">
+          <label class="label">Social links (optional)</label>
+          <div class="social-row">
+            <input name="linkedinUrl" type="url" [(ngModel)]="company.linkedinUrl" placeholder="LinkedIn URL" class="input" />
+            <input name="facebookUrl" type="url" [(ngModel)]="company.facebookUrl" placeholder="Facebook URL" class="input" />
+          </div>
+          <div class="social-row" style="margin-top:8px;">
+            <input name="instagramUrl" type="url" [(ngModel)]="company.instagramUrl" placeholder="Instagram URL" class="input" />
+            <input name="twitterUrl" type="url" [(ngModel)]="company.twitterUrl" placeholder="Twitter URL" class="input" />
+          </div>
+        </div>
+
+        <div *ngIf="error" class="alert error" role="alert">{{ error }}</div>
+        <div *ngIf="success" class="alert success" role="status">{{ success }}</div>
+
+        <!-- sticky bottom save/update -->
+        <div class="form-actions">
+          <button type="submit" class="btn-primary" [disabled]="saving || companyFormInvalid">
+            {{ saving ? (isEditMode ? 'Updating…' : 'Saving…') : (isEditMode ? 'Update Company' : 'Save Company') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

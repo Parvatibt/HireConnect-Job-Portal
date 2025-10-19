@@ -4,8 +4,8 @@
 
   <div class="hero-inner">
     <div class="hero-copy">
-      <h1 class="hero-title">Find your next role</h1>
-      <p class="hero-sub">Search thousands of jobs — filter by location, category and job type.</p>
+      <h1 class="hero-title" style="color:rgb(189, 33, 33)">Find your next role</h1>
+      <p class="hero-sub" style="color:black ">Search thousands of jobs — filter by location, category and job type.</p>
       <p class="hero-extra">Your skills deserve the perfect stage, let’s find it together</p>
     </div>
 
@@ -23,79 +23,152 @@
 </div>
 
 <div class="background">
-<!-- Main layout: sidebar + job list -->
-<div class="jobs-content">
-  <aside class="sidebar" aria-label="Job filters">
-    <h3>Filters</h3>
+  <!-- Main layout: sidebar + job list -->
+  <div class="jobs-content">
+    <aside class="sidebar" aria-label="Job filters">
+      <h3>Filters</h3>
 
-    <div class="filter-block">
-      <h4>Category</h4>
-      <ul class="filter-list">
-        <li *ngFor="let c of categories">
-          <label>
-            <input type="checkbox" (change)="toggleCategory(c)" />
-            <span>{{ c }}</span>
-          </label>
-        </li>
-      </ul>
-    </div>
+      <div class="filter-block">
+        <h4>Category</h4>
+        <ul class="filter-list">
+          <li *ngFor="let c of categories">
+            <label>
+              <input type="checkbox" (change)="toggleCategory(c)" />
+              <span>{{ c }}</span>
+            </label>
+          </li>
+        </ul>
+      </div>
 
-    <div class="filter-block">
-      <h4>Location</h4>
-      <ul class="filter-list">
-        <li *ngFor="let l of locations">
-          <label>
-            <input type="checkbox" (change)="toggleLocation(l)" />
-            <span>{{ l }}</span>
-          </label>
-        </li>
-      </ul>
-    </div>
+      <div class="filter-block">
+        <h4>Location</h4>
+        <ul class="filter-list">
+          <li *ngFor="let l of locations">
+            <label>
+              <input type="checkbox" (change)="toggleLocation(l)" />
+              <span>{{ l }}</span>
+            </label>
+          </li>
+        </ul>
+      </div>
 
-    <div class="filter-block">
-      <h4>Job Type</h4>
-      <ul class="filter-list">
-        <li *ngFor="let t of jobTypes">
-          <label>
-            <input type="checkbox" (change)="toggleJobType(t)" />
-            <span>{{ t }}</span>
-          </label>
-        </li>
-      </ul>
-    </div>
-  </aside>
+      <div class="filter-block">
+        <h4>Job Type</h4>
+        <ul class="filter-list">
+          <li *ngFor="let t of jobTypes">
+            <label>
+              <input type="checkbox" (change)="toggleJobType(t)" />
+              <span>{{ t }}</span>
+            </label>
+          </li>
+        </ul>
+      </div>
+    </aside>
 
-  <main class="job-list" aria-live="polite">
-    <div class="list-header">
-      <h2>Jobs</h2>
-      <div class="results-count">{{ filteredJobs.length }} result{{ filteredJobs.length === 1 ? '' : 's' }}</div>
-    </div>
+    <main class="job-list" aria-live="polite">
+      <div class="list-header">
+        <h2>Jobs</h2>
+        <div class="results-count">{{ filteredJobs.length }} result{{ filteredJobs.length === 1 ? '' : 's' }}</div>
+      </div>
 
-    <div *ngIf="filteredJobs.length === 0" class="no-results">
-      No jobs found — try different filters or search terms.
-    </div>
+      <div *ngIf="filteredJobs.length === 0" class="no-results">
+        No jobs found — try different filters or search terms.
+      </div>
 
-    <div class="cards">
-      <article class="job-card" *ngFor="let job of filteredJobs">
-  <!-- left: title + meta + description -->
-  <div class="job-card-left">
-    <div class="job-head">
-      <h3 class="job-title">{{ job.title }}</h3>
-      <div class="job-meta">{{ job.company }} · {{ job.location }}</div>
-    </div>
+      <div class="cards">
+        <article class="job-card" *ngFor="let job of filteredJobs; trackBy: trackByJobId">
+          <!-- left: title + meta -->
+          <div class="job-card-left">
+            <div class="job-head">
+              <h3 class="job-title">{{ job.title }}</h3>
 
-    <p class="job-desc">{{ job.shortDescription }}</p>
+              <!-- company and location -->
+              <div class="job-meta">
+                <span class="job-company" *ngIf="job.company?.name || job.company">
+                  {{ job.company?.name || job.company }}
+                </span>
+                <span class="job-location" *ngIf="job.location">
+                  <svg class="loc-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 2C8.686 2 6 4.686 6 8c0 5.25 6 12 6 12s6-6.75 6-12c0-3.314-2.686-6-6-6z" fill="#1f5fe6"/>
+                    <circle cx="12" cy="8" r="2.2" fill="#fff"/>
+                  </svg>
+                  <span class="loc-text">{{ job.location }}</span>
+                </span>
+              </div>
+            </div>
+
+            <!-- Experience and Salary row -->
+            <div class="job-subtle meta-row">
+              <span class="meta-item" *ngIf="job.minExp != null || job.maxExp != null">
+                Exp: {{ job.minExp ?? '—' }}–{{ job.maxExp ?? '—' }} yrs
+              </span>
+              <span class="meta-item" *ngIf="job.minSalary != null || job.maxSalary != null">
+                Salary: ₹{{ job.minSalary ?? '—' }}–₹{{ job.maxSalary ?? '—' }}
+              </span>
+            </div>
+          </div>
+
+          <!-- right: actions -->
+          <div class="job-card-right">
+            <a
+              class="btn-view"
+              [routerLink]="['/jobs', job.id]"
+              title="View details for {{ job.title }}"
+              aria-label="View details for {{ job.title }}"
+            >
+              View Details
+            </a>
+
+            <!-- Apply Now button (same UX as job-details) -->
+            <button
+              class="btn-primary btn-apply-now"
+              type="button"
+              (click)="applyNow(job)"
+              [disabled]="loadingApplied || isApplied(job)"
+              [attr.title]="isApplied(job) ? 'You have already applied' : (loadingApplied ? 'Checking…' : 'Apply now')"
+            >
+              <i class="bi bi-send" aria-hidden="true"></i>
+              &nbsp;
+              <span *ngIf="loadingApplied && !isApplied(job)">Checking…</span>
+              <span *ngIf="!loadingApplied">{{ isApplied(job) ? 'Applied' : 'Apply Now' }}</span>
+            </button>
+          </div>
+        </article>
+      </div>
+    </main>
   </div>
-
-  <!-- right: actions -->
-  <div class="job-card-right">
-    <a class="btn-view" [routerLink]="['/jobs', job.id]" title="View details for {{ job.title }}">
-      View Details
-    </a>
-  </div>
-</article>
-
-    </div>
-  </main>
 </div>
+
+<!-- Sign-in prompt modal (Jobs list) -->
+<div
+  class="auth-prompt-backdrop"
+  *ngIf="showAuthPrompt"
+  role="dialog"
+  aria-modal="true"
+  [attr.aria-labelledby]="'authPromptTitle'"
+>
+  <div class="auth-prompt-card" role="document">
+    <button class="close-x" aria-label="Close" (click)="closeAuthPrompt()">✕</button>
+
+    <div class="auth-prompt-body">
+      <div class="auth-illustration" aria-hidden="true">
+        <svg width="72" height="72" viewBox="0 0 24 24" fill="none" focusable="false" aria-hidden="true">
+          <path d="M12 12a4 4 0 100-8 4 4 0 000 8z" fill="#1f5fe6"/>
+          <path d="M2 20a9.999 9.999 0 0120 0H2z" fill="#e6f0ff"/>
+        </svg>
+      </div>
+
+      <h2 id="authPromptTitle">Sign in to apply</h2>
+      <p>To apply for <strong>{{ authPromptJobTitle || 'this job' }}</strong>, please sign in first. If you don't have an account, you can register.</p>
+
+      <div class="auth-prompt-actions">
+        <button class="btn btn-primary" (click)="goToLogin()">Sign In</button>
+        <button class="btn btn-secondary" (click)="goToRegister()">Register</button>
+      </div>
+
+      <div class="auth-prompt-help">
+        <small>Already signed in but seeing this? Try refreshing or check your session.</small>
+      </div>
+    </div>
+  </div>
 </div>

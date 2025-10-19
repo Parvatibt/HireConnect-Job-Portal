@@ -1,0 +1,68 @@
+<div class="container my-4 recruiter-dashboard">
+
+
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm form-card">
+        <div class="card-body">
+          <h5 class="mb-3" style="color:rgb(51, 51, 195)">Your details</h5>
+
+          <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+            <div class="row g-3">
+              <div class="col-12">
+                <input class="form-control" placeholder="Full name" formControlName="fullName" />
+              </div>
+
+              <div class="col-12 col-md-6">
+                <input class="form-control" placeholder="Mobile number" formControlName="phone" />
+              </div>
+
+              <div class="col-12 col-md-6">
+                <input class="form-control" placeholder="Work email" formControlName="email" />
+              </div>
+
+              <div class="col-12">
+                <label class="form-label mb-2">Hiring for</label>
+                <div class="d-flex gap-2 flex-wrap pills-row">
+                  <button
+                    type="button"
+                    class="pill"
+                    [class.active]="form.value.hiringFor==='COMPANY'"
+                    (click)="form.patchValue({ hiringFor: 'COMPANY' })">
+                    Your company
+                  </button>
+
+                  <button
+                    type="button"
+                    class="pill"
+                    [class.active]="form.value.hiringFor==='CONSULTANCY'"
+                    (click)="form.patchValue({ hiringFor: 'CONSULTANCY' })">
+                    Your consultancy
+                  </button>
+                </div>
+              </div>
+
+              <div class="col-12">
+                <input class="form-control" placeholder="Company name" formControlName="companyName" />
+              </div>
+            </div>
+
+            <div class="mt-4 d-flex align-items-center gap-3">
+              <button class="btn btn-success" type="submit" [disabled]="saving">
+                <span *ngIf="!saving">Save &amp; continue</span>
+                <span *ngIf="saving">Saving…</span>
+              </button>
+
+              <!-- CALL THE PUBLIC METHOD cancel() INSTEAD OF USING router DIRECTLY -->
+              <button type="button" class="btn btn-outline-secondary" (click)="cancel()">
+                Cancel
+              </button>
+            </div>
+
+            <div *ngIf="error" class="text-danger mt-3">{{ error }}</div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

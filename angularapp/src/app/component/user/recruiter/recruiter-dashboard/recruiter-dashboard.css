@@ -1,0 +1,233 @@
+/* recruiter-dashboard.css
+   Centered recruiter dashboard form card + refreshed styles
+*/
+
+/* Theme tokens */
+:root{
+  --max-w: 980px;
+  --bg: #eef3fb;               /* page background */
+  --card: #ffffff;             /* card surface */
+  --muted: #6b7280;
+  --accent: #0066ff;           /* primary brand (blue) */
+  --accent-2: #00b0ff;         /* secondary */
+  --accent-contrast: #ffffff;
+  --soft-border: rgba(12,20,40,0.06);
+  --shadow-1: 0 10px 40px rgba(12,20,40,0.10);
+  --radius-lg: 16px;
+  --radius-sm: 10px;
+  --input-h: 52px;
+  --card-width: 680px;         /* adjust card width here */
+}
+
+/* Page frame */
+body {
+  background: linear-gradient(180deg, var(--bg) 0%, #f9fbff 100%);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #071428;
+  margin: 0;
+  min-height: 100vh;
+}
+
+/* Center the whole page and card */
+.recruiter-dashboard {
+  min-height: 100vh;                 /* full viewport height */
+  display: flex;
+  align-items: center;               /* vertical center */
+  justify-content: center;           /* horizontal center */
+  padding: 28px 20px;
+  box-sizing: border-box;
+  max-width: var(--max-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Header */
+.header-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  width: 100%;
+  text-align: center;
+}
+.header-title h2 {
+  margin: 0;
+  font-size: 1.55rem;
+  letter-spacing: -0.2px;
+  font-weight: 800;
+  color: #041127;
+}
+.header-title .subtitle {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Card: constrained width, centered */
+.form-card {
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  width: 80%;
+  max-width: var(--card-width);   /* controlled width */
+  border-radius: var(--radius-lg);
+  overflow: visible;
+  background: linear-gradient(180deg, var(--card), #fbfdff);
+  border: 1px solid var(--soft-border);
+  box-shadow: var(--shadow-1);
+  transition: transform .16s ease, box-shadow .16s ease, opacity .28s ease;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: card-enter .42s cubic-bezier(.2,.9,.3,1) forwards;
+}
+
+/* entrance animation */
+@keyframes card-enter {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* lick of hover elevation */
+.form-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 26px 70px rgba(8,16,35,0.14);
+}
+
+/* left accent stripe */
+.form-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 72px;
+  background: linear-gradient(180deg, var(--accent), var(--accent-2));
+  border-top-left-radius: var(--radius-lg);
+  border-bottom-left-radius: var(--radius-lg);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* small decorative initial inside stripe (optional; include markup if you want) */
+.form-card .avatar-accent {
+  position: absolute;
+  left: 16px;
+  top: 20px;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.12);
+  display: grid;
+  place-items: center;
+  color: var(--accent-contrast);
+  font-weight: 800;
+  font-size: 1.2rem;
+  z-index: 3;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+
+/* card body sits above stripe */
+.form-card .card-body {
+  position: relative;
+  z-index: 2;
+  padding: 28px 36px 32px 110px; /* leave room for left stripe */
+  box-sizing: border-box;
+}
+
+/* Heading inside card — "Your details" in blue */
+.form-card h5 {
+  margin: 0 0 12px 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent); /* blue color for "Your details" */
+}
+
+/* Form grid spacing */
+.row.g-3 { gap: 14px; }
+
+/* Inputs */
+.form-control {
+  height: var(--input-h);
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  border: 1px solid #e7eefb;
+  background: linear-gradient(180deg,#fff,#fcfeff);
+  font-size: 0.98rem;
+  transition: box-shadow .12s ease, border-color .12s ease, transform .06s ease;
+  box-sizing: border-box;
+}
+.form-control::placeholder { color: #9fb0d1; opacity: 1; }
+.form-control:focus {
+  border-color: transparent;
+  box-shadow: 0 8px 30px rgba(0,102,255,0.12);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+/* Two-column behaviour for medium+ screens */
+@media (min-width: 768px) {
+  .col-md-6 { flex: 0 0 50%; max-width: 50%; }
+}
+
+/* Pills */
+.pills-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.pill {
+  padding: 10px 18px;
+  border-radius: 999px;
+  background: transparent;
+  border: 1px solid rgba(8,20,50,0.06);
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .12s ease;
+  color: #092034;
+  box-shadow: none;
+}
+.pill:hover { transform: translateY(-3px); box-shadow: 0 8px 22px rgba(8,20,50,0.04); }
+.pill.active {
+  color: var(--accent-contrast);
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-color: transparent;
+  box-shadow: 0 14px 36px rgba(0,112,255,0.14);
+}
+
+/* Actions */
+.mt-4 { margin-top: 22px; display: flex; gap: 12px; align-items: center; }
+.btn {
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+  cursor: pointer;
+}
+.btn-success {
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  color: var(--accent-contrast);
+  border: none;
+  box-shadow: 0 12px 30px rgba(0,112,255,0.12);
+}
+.btn-outline-secondary {
+  background: transparent;
+  border: 1px solid rgba(8,20,50,0.06);
+  color: #081827;
+}
+
+/* Error */
+.text-danger {
+  color: #c32a2a;
+  font-weight: 700;
+  margin-top: 8px;
+}
+
+/* Responsive adjustments: on small screens remove stripe and use compact padding */
+@media (max-width: 767.98px) {
+  .form-card::before { display: none; }
+  .form-card .card-body { padding: 18px; }
+  .recruiter-dashboard { padding: 18px 12px; align-items: flex-start; }
+  .mt-4 { flex-direction: column; }
+  .mt-4 .btn { width: 100%; }
+  .col-md-6 { max-width: 100%; flex: 1 1 100%; }
+}
+
+/* Utility separator */
+.form-sep { height: 1px; background: linear-gradient(90deg, rgba(0,0,0,0.02), rgba(0,0,0,0.04)); margin: 18px 0; }

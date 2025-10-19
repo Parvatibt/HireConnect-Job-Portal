@@ -1,260 +1,208 @@
-<div class="recruiter-profile-page">
-<div class="profile-container">
-    <!-- Header Section -->
-    <div class="profile-header">
-      <div class="company-logo-section">
-        <div class="logo-container">
-          <img *ngIf="recruiter.profilePicture; else defaultPic" [src]="recruiter.profilePicture" alt="Company Logo" class="company-logo">
-    <ng-template #defaultPic>
-            <div class="logo-placeholder">
-              <i class="bi bi-building"></i>
-              <span>Upload Logo</span>
-            </div>
-    </ng-template>
-          <div class="logo-upload">
-            <input type="file" id="logo-upload" (change)="onFileSelected($event)" accept="image/*" hidden>
-            <label for="logo-upload" class="upload-btn">
-              <i class="bi bi-camera"></i>
-            </label>
-          </div>
-        </div>
-      </div>
-      <div class="company-info-header">
-        <h1>{{recruiter.companyName || 'Company Name'}}</h1>
-        <p class="company-tagline">{{recruiter.companyDescription || 'Add your company description'}}</p>
-        <div class="company-stats">
-          <span class="stat-item">
-            <i class="bi bi-people"></i>
-            {{recruiter.companySize || 'Company Size'}}
-          </span>
-          <span class="stat-item">
-            <i class="bi bi-geo-alt"></i>
-            {{recruiter.location || 'Location'}}
-          </span>
-          <span class="stat-item">
-            <i class="bi bi-briefcase"></i>
-            {{recruiter.industry || 'Industry'}}
-          </span>
-        </div>
-      </div>
+<div class="container my-4">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="mb-0">Your profile</h2>
+
+    <div class="d-flex gap-2">
+      <button
+        class="btn btn-primary"
+        (click)="goCompanyDetails()"
+        *ngIf="canEditCompany">
+        Company Details
+      </button>
+
+      <button class="btn btn-primary" (click)="goPostJob()" *ngIf="profile?.id">Post a Job</button>
+    </div>
   </div>
 
-    <!-- Profile Form -->
-    <div class="profile-form-container">
-      <form (ngSubmit)="saveProfile()" class="profile-form">
-        <!-- Basic Recruiter Information Card -->
-        <div class="form-card recruiter-card">
-          <div class="card-header">
-            <h3><i class="bi bi-person-badge"></i> Basic Recruiter Information</h3>
-          </div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="recruiterName">Recruiter Name *</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-person"></i></span>
-                  <input type="text" id="recruiterName" [(ngModel)]="recruiter.recruiterName" name="recruiterName" class="form-control" placeholder="Enter your full name" required>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="email">Email Address *</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                  <input type="email" id="email" [(ngModel)]="recruiter.email" name="email" class="form-control" placeholder="Enter your email" required>
-                </div>
-              </div>
+  <div class="row g-4">
+    <!-- LEFT: profile card (requires profile) -->
+    <div class="col-12 col-lg-4">
+      <div class="card shadow-sm  sidebar-card" *ngIf="profile?.id; else noProfile">
+        <div class="card-body">
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="avatar bg-primary text-white">
+              {{ (profile?.fullName || profile?.email || 'R') | slice:0:1 }}
             </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="contact">Contact Number</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-phone"></i></span>
-                  <input type="tel" id="contact" [(ngModel)]="recruiter.contact" name="contact" class="form-control" placeholder="Enter contact number">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="designation">Designation</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
-                  <input type="text" id="designation" [(ngModel)]="recruiter.designation" name="designation" class="form-control" placeholder="e.g., HR Manager">
-                </div>
-              </div>
-            </div>
-            <div class="card-actions">
-              <button type="button" class="btn btn-secondary" (click)="cancelEdit()">
-                <i class="bi bi-x-circle"></i> Cancel
-              </button>
-              <button type="submit" class="btn btn-primary">
-                <i class="bi bi-check-circle"></i> Save Profile
-              </button>
+            <div>
+              <h5 class="mb-0">{{ profile?.fullName || '—' }}</h5>
+              <small class="text-muted">{{ profile?.email || '—' }}</small>
             </div>
           </div>
-        </div>
 
-        <!-- Company Information Card -->
-        <div class="form-card company-card">
-          <div class="card-header">
-            <h3><i class="bi bi-building"></i> Company Information</h3>
-          </div>
-          <div class="card-body">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="companyName">Company Name *</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-building"></i></span>
-                  <input type="text" id="companyName" [(ngModel)]="recruiter.companyName" name="companyName" class="form-control" placeholder="Enter company name" required>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="industry">Industry</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-tags"></i></span>
-                  <select id="industry" [(ngModel)]="recruiter.industry" name="industry" class="form-control">
-                    <option value="">Select Industry</option>
-                    <option value="IT/Software">IT/Software</option>
-                    <option value="Banking/Finance">Banking/Finance</option>
-                    <option value="Healthcare">Healthcare</option>
-                    <option value="Manufacturing">Manufacturing</option>
-                    <option value="Education">Education</option>
-                    <option value="Retail">Retail</option>
-                    <option value="Other">Other</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="companySize">Company Size</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-people"></i></span>
-                  <select id="companySize" [(ngModel)]="recruiter.companySize" name="companySize" class="form-control">
-                    <option value="">Select Company Size</option>
-                    <option value="1-10">1-10 employees</option>
-                    <option value="11-50">11-50 employees</option>
-                    <option value="51-200">51-200 employees</option>
-                    <option value="201-500">201-500 employees</option>
-                    <option value="501-1000">501-1000 employees</option>
-                    <option value="1000+">1000+ employees</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="location">Location</label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-geo-alt"></i></span>
-                  <input type="text" id="location" [(ngModel)]="recruiter.location" name="location" class="form-control" placeholder="City, State">
-                </div>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="companyDescription">Company Description</label>
-              <textarea id="companyDescription" [(ngModel)]="recruiter.companyDescription" name="companyDescription" class="form-control" rows="4" placeholder="Tell us about your company..."></textarea>
-            </div>
-            <div class="form-group">
-              <label for="website">Company Website</label>
-              <div class="input-group">
-                <span class="input-group-text"><i class="bi bi-globe"></i></span>
-                <input type="url" id="website" [(ngModel)]="recruiter.website" name="website" class="form-control" placeholder="https://www.company.com">
-              </div>
-            </div>
-          </div>
-        </div>
+          <ul class="list-unstyled small mb-3">
+            <li class="mb-1">
+              <span class="text-muted">Mobile:</span>
+              <span class="ms-1">{{ profile?.phone || '—' }}</span>
+            </li>
+            <li class="mb-1">
+              <span class="text-muted">Hiring for:</span>
+              <span class="ms-1">
+                {{ (profile?.hiringFor || 'COMPANY') === 'COMPANY' ? 'Your company' : 'Your consultancy' }}
+              </span>
+            </li>
+            <li class="mb-1">
+              <span class="text-muted">Company:</span>
+              <span class="ms-1">{{ profile?.companyName || '—' }}</span>
+            </li>
+          </ul>
 
-        <!-- Job Roles Card -->
-        <div class="form-card job-roles-card">
-          <div class="card-header">
-            <h3><i class="bi bi-briefcase-fill"></i> Job Roles & Positions</h3>
-            <button type="button" class="btn btn-add" (click)="addJobRole()">
-              <i class="bi bi-plus-circle"></i> Add Job Role
+          <div class="d-grid">
+            <button class="btn btn-outline-secondary" (click)="goEditProfile()">
+              Edit profile
             </button>
           </div>
+        </div>
+      </div>
+
+      <ng-template #noProfile>
+        <div class="card shadow-sm">
           <div class="card-body">
-            <div class="job-roles-list" *ngIf="jobRoles.length > 0; else noJobRoles">
-              <div class="job-role-item" *ngFor="let jobRole of jobRoles; let i = index">
-                <div class="job-role-header">
-                  <h4>Job Role {{i + 1}}</h4>
-                  <button type="button" class="btn btn-remove" (click)="removeJobRole(i)">
-                    <i class="bi bi-trash"></i>
-                  </button>
+            <p class="mb-3">
+              You haven’t created your recruiter profile yet.
+            </p>
+            <button class="btn btn-success" (click)="goEditProfile()">Create profile</button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- RIGHT: applicants + posted jobs -->
+    <div class="col-12 col-lg-8">
+      <!-- Applicants -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h5 class="mb-0">Applicants for your jobs</h5>
+
+            <!-- Job filter: small select + search button -->
+            <div class="d-flex align-items-center gap-2 filter-group">
+              <label class="small text-muted mb-0 me-1">Filter</label>
+              <select class="form-select form-select-sm" [(ngModel)]="selectedJobId" aria-label="Filter by job"
+                      (keyup.enter)="applyFilter()">
+                <option [ngValue]="null">— All jobs —</option>
+                <option *ngFor="let j of jobs" [ngValue]="j.id">{{ j.title }}</option>
+              </select>
+
+              <button class="btn btn-sm btn-outline-primary" (click)="applyFilter()" [disabled]="loadingApplicants">
+                <i class="bi bi-search"></i> <!-- requires bootstrap-icons or replace with text -->
+              </button>
+
+              <button class="btn btn-sm btn-outline-secondary" (click)="clearFilter()" [disabled]="loadingApplicants">
+                Clear
+              </button>
+            </div>
+          </div>
+
+          <hr />
+
+          <div *ngIf="!profile?.id" class="text-muted">
+            Create your profile to start receiving applications.
+          </div>
+
+          <div *ngIf="profile?.id">
+            <div *ngIf="loadingApplicants" class="text-muted">Loading applicants…</div>
+
+            <div *ngIf="!loadingApplicants && applicants.length===0" class="text-muted">
+              No applications yet for the selected filter.
+            </div>
+
+            <div *ngIf="!loadingApplicants && applicants.length>0" class="table-responsive">
+              <div class="d-flex align-items-center justify-content-between mb-2">
+                <div class="small text-muted">
+                  Showing <strong>{{ applicants.length }}</strong> applicant{{ applicants.length>1 ? 's' : '' }}
+                  <span *ngIf="selectedJobId">for <em>{{ getJobTitle(selectedJobId) }}</em></span>
                 </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Job Title *</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-briefcase"></i></span>
-                      <input type="text" [(ngModel)]="jobRole.title" name="jobTitle{{i}}" class="form-control" placeholder="e.g., Software Engineer" required>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label>Department</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-diagram-3"></i></span>
-                      <input type="text" [(ngModel)]="jobRole.department" name="department{{i}}" class="form-control" placeholder="e.g., Engineering">
-                    </div>
+              </div>
+
+              <table class="table align-middle">
+                <thead>
+                  <tr>
+                    <th>Candidate</th>
+                    <th>Job</th>
+                    <th>Applied</th>
+                    <th>Status</th>
+                    <th class="text-end">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let a of applicants; trackBy: trackByApplicantId">
+                    <td>
+                      <div class="fw-semibold">{{ a.candidateName }}</div>
+                      <div class="small text-muted">{{ a.candidateEmail }}</div>
+                    </td>
+                    <td>{{ a.jobTitle }}</td>
+                    <td>{{ a.appliedAt | date:'mediumDate' }}</td>
+                    <td>
+                      <span class="badge"
+                            [ngClass]="{
+                              'bg-secondary': !a.status,
+                              'bg-info text-dark': a.status==='REVIEW',
+                              'bg-primary': a.status==='INTERVIEW',
+                              'bg-success': a.status==='APPROVED',
+                              'bg-danger': a.status==='REJECTED'
+                            }">
+                        {{ a.status || 'PENDING' }}
+                      </span>
+                    </td>
+                    <td class="text-end">
+                      <div class="btn-group">
+                        <button class="btn btn-outline-secondary btn-sm"
+                                (click)="viewResume(a.resumeUrl)"
+                                [disabled]="!a.resumeUrl">
+                          Resume
+                        </button>
+                        <button class="btn btn-success btn-sm" (click)="approve(a)">Approve</button>
+                        <button class="btn btn-danger btn-sm" (click)="reject(a)">Reject</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div> <!-- profile?.id -->
+        </div>
+      </div>
+
+      <!-- Posted jobs -->
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center justify-content-between">
+            <h5 class="mb-0">Your posted jobs</h5>
+          </div>
+          <hr />
+
+          <div *ngIf="!profile?.id" class="text-muted">
+            Create your profile to post jobs.
+          </div>
+
+          <div *ngIf="profile?.id">
+            <div *ngIf="loadingJobs">Loading jobs…</div>
+            <div *ngIf="!loadingJobs && jobs.length===0" class="text-muted">No jobs yet.</div>
+
+            <div class="list-group" *ngIf="!loadingJobs && jobs.length>0">
+              <div class="list-group-item d-flex align-items-start justify-content-between" *ngFor="let j of jobs; trackBy: trackByJobId">
+                <div class="flex-grow-1">
+                  <h6 class="mb-1">{{ j.title }}</h6>
+                  <small class="text-muted">{{ j.location }}</small>
+                  <div class="small mt-1 text-muted">
+                    <span *ngIf="j.minExp != null || j.maxExp != null">
+                      Exp: {{ j.minExp ?? '—' }}–{{ j.maxExp ?? '—' }} yrs
+                    </span>
+                    <span class="ms-2" *ngIf="j.minSalary != null || j.maxSalary != null">
+                      Salary: ₹{{ j.minSalary ?? '—' }}–₹{{ j.maxSalary ?? '—' }}
+                    </span>
                   </div>
                 </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Experience Required</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-clock"></i></span>
-                      <select [(ngModel)]="jobRole.experience" name="experience{{i}}" class="form-control">
-                        <option value="">Select Experience</option>
-                        <option value="0-1">0-1 years</option>
-                        <option value="1-3">1-3 years</option>
-                        <option value="3-5">3-5 years</option>
-                        <option value="5-10">5-10 years</option>
-                        <option value="10+">10+ years</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label>Job Type</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-calendar"></i></span>
-                      <select [(ngModel)]="jobRole.type" name="jobType{{i}}" class="form-control">
-                        <option value="">Select Type</option>
-                        <option value="Full-time">Full-time</option>
-                        <option value="Part-time">Part-time</option>
-                        <option value="Contract">Contract</option>
-                        <option value="Internship">Internship</option>
-                        <option value="Remote">Remote</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label>Job Description</label>
-                  <textarea [(ngModel)]="jobRole.description" name="jobDescription{{i}}" class="form-control" rows="3" placeholder="Describe the job role and responsibilities..."></textarea>
-                </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Skills Required</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-tags"></i></span>
-                      <input type="text" [(ngModel)]="jobRole.skills" name="skills{{i}}" class="form-control" placeholder="e.g., JavaScript, React, Node.js">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label>Salary Range</label>
-                    <div class="input-group">
-                      <span class="input-group-text"><i class="bi bi-currency-rupee"></i></span>
-                      <input type="text" [(ngModel)]="jobRole.salary" name="salary{{i}}" class="form-control" placeholder="e.g., 5-10 LPA">
-                    </div>
-                  </div>
+
+                <div class="btn-group ms-3">
+                  <button class="btn btn-outline-primary btn-sm" (click)="goEditJob(j)">Edit</button>
+                  <button class="btn btn-outline-danger btn-sm" (click)="deleteJob(j)">Delete</button>
                 </div>
               </div>
             </div>
-            <ng-template #noJobRoles>
-              <div class="no-job-roles">
-                <i class="bi bi-briefcase"></i>
-                <h4>No Job Roles Added</h4>
-                <p>Click "Add Job Role" to start adding job positions for your company.</p>
-              </div>
-            </ng-template>
-          </div>
+          </div> <!-- profile?.id -->
         </div>
-  </form>
+      </div>
     </div>
   </div>
 </div>

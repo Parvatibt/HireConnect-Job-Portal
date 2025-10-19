@@ -1,78 +1,319 @@
-/* Admin content wrapper for all admin pages */
+/* reviews-moderation.css — Elegant, modern, responsive design */
+
+/* ==== Layout Variables ==== */
+:root {
+  --sidebar-width: 280px;   /* adjust if your sidebar is wider */
+  --content-gap: 30px;
+  --page-padding: 28px;
+  --card-width: 1000px;
+  --radius: 14px;
+
+  /* Colors */
+  --bg-page: linear-gradient(180deg, #f8fbff, #ffffff);
+  --card-bg: #ffffff;
+  --border-soft: rgba(17, 24, 39, 0.05);
+  --muted: #6b7280;
+  --text: #0f1724;
+  --primary: #0f6efd;
+  --success: #16a34a;
+  --danger: #ef4444;
+  --accent: #7c5cff;
+
+  --font: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* ==== Wrapper & Card ==== */
 .admin-content-wrapper {
   min-height: 100vh;
-  margin-left: 220px; /* width of sidebar */
-  padding: 2.5rem 2rem 2rem 2rem;
-  background: url('/assets/images/dashboard-bg.jpg') no-repeat center center fixed, linear-gradient(135deg, #e0f7fa 0%, #ffffff 100%);
-  background-size: cover, 100% 100%;
+  margin-left: 14%;
+  padding: var(--page-padding);
+  background: var(--bg-page);
   display: flex;
-  align-items: flex-start;
   justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
+  font-family: var(--font);
+  color: var(--text);
 }
 
 .admin-content-card {
-  background: rgba(255,255,255,0.97);
-  border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-  padding: 2rem 2.5rem;
   width: 100%;
-  max-width: 900px;
-  margin: 2rem auto;
+  max-width: var(--card-width);
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-soft);
+  padding: 1.8rem;
 }
 
+/* ==== Header ==== */
 .admin-content-card h2 {
-  margin-top: 0;
-  color: #1976d2;
-  font-size: 2rem;
+  margin: 0 0 1rem 0;
+  font-size: 1.6rem;
   font-weight: 700;
-  margin-bottom: 1.5rem;
+  color: #0b2447;
 }
 
-.admin-content-card table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
+/* ==== Toolbar ==== */
+.toolbar {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  margin-bottom: 1rem;
 }
-.admin-content-card th, .admin-content-card td {
-  padding: 0.85rem 1.2rem;
-  border-bottom: 1px solid #eaeaea;
-  text-align: left;
+.toolbar .spacer {
+  flex: 1 1 auto;
 }
-.admin-content-card th {
-  background: #f5f7fa;
-  font-weight: 600;
+.muted {
+  color: var(--muted);
+  font-size: 0.95rem;
 }
-.admin-content-card button {
-  background: #1976d2;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  padding: 0.5rem 1.2rem;
-  margin-right: 0.5rem;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-.admin-content-card button:hover {
-  background: #125ea2;
-}
-.admin-content-card ul {
+
+/* ==== Review List ==== */
+.review-list {
   list-style: none;
   padding: 0;
-  margin: 1rem 0 0 0;
+  margin: 0;
+  display: grid;
+  gap: 1rem;
 }
-.admin-content-card li {
-  padding: 0.85rem 0;
-  border-bottom: 1px solid #eaeaea;
+
+/* ==== Review Item ==== */
+.review-item {
+  display: grid;
+  grid-template-columns: 70px 1fr 160px;
+  gap: 1rem;
+  align-items: flex-start;
+  background: linear-gradient(180deg, #ffffff, #fafbff);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 8px 24px rgba(8, 15, 40, 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.review-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 40px rgba(8, 15, 40, 0.07);
+}
+
+/* Optional avatar with initials */
+.review-item::before {
+  content: attr(data-initial);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--accent), #5b3bd6);
+  box-shadow: 0 6px 18px rgba(16, 24, 40, 0.08);
 }
-.review {
-  background: #f2f2f2;
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 6px;
+
+/* ==== Review Content ==== */
+.review-main {
+  min-width: 0;
 }
-button {
-  margin-right: 5px;
+.review-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 6px;
+}
+.review-name {
+  font-weight: 700;
+  color: #0b2447;
+  font-size: 1rem;
+}
+.review-designation {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.review-date {
+  color: #94a3b8;
+  font-size: 0.84rem;
+}
+.review-message {
+  padding: 0.8rem;
+  background: #f8faff;
+  border-radius: 10px;
+  border: 1px solid rgba(11, 37, 64, 0.04);
+  color: #12202d;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+/* ==== Review Actions ==== */
+.review-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: stretch;
+  justify-content: center;
+}
+
+/* ==== Buttons ==== */
+.btn,
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+/* Primary (Refresh) */
+.btn.primary {
+  background: linear-gradient(180deg, #1565d8, #0b57d6);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(11, 88, 190, 0.12);
+}
+.btn.primary::before {
+  content: "⟳";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.15);
+}
+.btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(11, 88, 190, 0.14);
+}
+.btn.primary:active {
+  transform: translateY(0);
+}
+.btn.primary:focus {
+  outline: 3px solid rgba(15, 110, 253, 0.14);
+  outline-offset: 3px;
+}
+
+/* Approve Button */
+.action-btn.action-approve {
+  background: linear-gradient(180deg, #ecfdf3, #eaf7ee);
+  color: #05512b;
+  border: 1px solid rgba(16, 163, 74, 0.08);
+  box-shadow: 0 8px 18px rgba(16, 163, 74, 0.04);
+}
+.action-btn.action-approve::before {
+  content: "✓";
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(16, 163, 74, 0.12);
+  color: #0f7a45;
+  font-weight: 800;
+}
+
+/* Reject Button */
+.action-btn.action-reject {
+  background: linear-gradient(180deg, #fff5f5, #fff1f1);
+  color: #6b1e1e;
+  border: 1px solid rgba(239, 68, 68, 0.08);
+  box-shadow: 0 8px 18px rgba(239, 68, 68, 0.04);
+}
+.action-btn.action-reject::before {
+  content: "✖";
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(239, 68, 68, 0.1);
+  color: #c53030;
+  font-weight: 800;
+}
+
+/* Common hover/active/focus states */
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(3, 11, 29, 0.06);
+}
+.action-btn:active {
+  transform: translateY(0);
+}
+.action-btn:focus {
+  outline: 3px solid rgba(15, 110, 253, 0.1);
+  outline-offset: 3px;
+}
+
+/* Disabled State */
+.action-btn[disabled],
+.btn[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ==== Empty & Error Messages ==== */
+.empty {
+  text-align: center;
+  color: var(--muted);
+  padding: 1rem;
+  font-size: 0.95rem;
+}
+.error {
+  color: #8b1f1f;
+  background: #fff2f2;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(235, 87, 87, 0.08);
+  margin-bottom: 1rem;
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 860px) {
+  .review-item {
+    grid-template-columns: 60px 1fr;
+  }
+  .review-actions {
+    flex-direction: row;
+    gap: 0.5rem;
+    grid-column: 1 / -1;
+    justify-content: flex-start;
+  }
+  .review-item::before {
+    width: 56px;
+    height: 56px;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .admin-content-wrapper {
+    margin-left: 0;
+    padding: 14px;
+  }
+  .admin-content-card {
+    padding: 1rem;
+  }
+  .review-item {
+    grid-template-columns: 50px 1fr;
+    padding: 0.8rem;
+  }
+  .review-item::before {
+    width: 50px;
+    height: 50px;
+  }
+  .action-btn {
+    gap: 8px;
+    padding: 8px 10px;
+    font-size: 0.88rem;
+  }
+  .action-btn::before {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
 }

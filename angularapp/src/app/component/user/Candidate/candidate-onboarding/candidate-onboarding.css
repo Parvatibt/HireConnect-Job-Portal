@@ -1,0 +1,14 @@
+.onboard { max-width:760px; margin:20px auto; padding:18px; background:#f8fafc; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.04); font-family: "Segoe UI", Roboto, Arial, sans-serif; }
+h2 { margin-top:0; }
+.step { margin-top:12px; }
+input { display:block; width:100%; padding:10px 12px; margin:8px 0; border-radius:6px; border:1px solid #dfe6ee; box-sizing:border-box; }
+button { padding:10px 14px; border-radius:8px; border:none; background:#1a73e8; color:#fff; font-weight:600; cursor:pointer; margin-right:8px; }
+button[disabled] { opacity:0.6; cursor:not-allowed; }
+.err { color:#b00020; font-size:13px; margin-top:-6px; margin-bottom:6px; }
+.education-item { background:#fff; padding:10px; border-radius:6px; margin-bottom:8px; border:1px solid #eef3f8; }
+.controls { display:flex; gap:8px; margin-top:8px; }
+.steps { display:flex; gap:8px; margin-bottom:10px; }
+.steps button { background:#e6eefc; color:#1a73e8; font-weight:600; padding:6px 10px; border-radius:999px; border:none; }
+.steps button.active { background:#1a73e8; color:#fff; }
+.file-row { display:flex; gap:10px; align-items:center; }
+.error { color:#b00020; margin-top:12px; }

@@ -17,8 +17,4 @@ public class RoleService {
     public Optional<Role> findByName(String name) {
         return roleRepo.findByName(name);
     }
-
-    public Role save(Role role) {
-        return roleRepo.save(role);
-    }
 }

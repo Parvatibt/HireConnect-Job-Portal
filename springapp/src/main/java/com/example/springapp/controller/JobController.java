@@ -1,82 +1,104 @@
+// src/main/java/com/example/springapp/controller/JobController.java
 package com.example.springapp.controller;
 
-import com.example.springapp.dto.CreateJobRequest;
 import com.example.springapp.dto.JobDTO;
 import com.example.springapp.service.JobService;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import jakarta.servlet.http.HttpServletRequest;
 import java.security.Principal;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/jobs")
 public class JobController {
 
-    private final JobService service;
+    private static final Logger logger = LoggerFactory.getLogger(JobController.class);
+    private final JobService jobService;
 
-    public JobController(JobService service) { this.service = service; }
+    public JobController(JobService jobService) {
+        this.jobService = jobService;
+    }
 
-    /** List active jobs with pagination & sort (default sort by postedAt desc) */
+    /** 🔹 Used by landing page — fail-soft to empty list on error */
     @GetMapping
-    public Page<JobDTO> list(@RequestParam(defaultValue = "0") int page,
-                             @RequestParam(defaultValue = "10") int size,
-                             @RequestParam(defaultValue = "postedAt") String sortBy,
-                             @RequestParam(defaultValue = "true") boolean desc) {
-        return service.listActive(page, size, sortBy, desc);
+    public List<JobDTO> getAllJobs() {
+        try {
+            return jobService.getAllJobs();
+        } catch (Throwable t) {
+            logger.error("GET /api/jobs failed: {}", t.toString(), t);
+            return List.of();
+        }
     }
 
-    /** Search jobs */
-    @GetMapping("/search")
-    public Page<JobDTO> search(@RequestParam String q,
-                               @RequestParam(defaultValue = "0") int page,
-                               @RequestParam(defaultValue = "10") int size) {
-        return service.search(q, page, size);
+    @GetMapping("/mine")
+    public ResponseEntity<?> getMyJobs(Principal principal) {
+        if (principal == null) {
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+        String username = principal.getName();
+        return ResponseEntity.ok(jobService.getJobsByRecruiter(username));
     }
 
-    /** Get single job */
-    @GetMapping("/{id}")
-    public ResponseEntity<JobDTO> get(@PathVariable Long id) {
-        JobDTO dto = service.getById(id);
-        return ResponseEntity.ok(dto);
+    @GetMapping("/{id:\\d+}")
+    public JobDTO getJobById(@PathVariable Long id) {
+        return jobService.getJobById(id);
     }
 
-    /**
-     * Create job
-     * Only recruiters and admins should be able to create jobs.
-     * Adjust role strings to match your Role naming (ROLE_RECRUITER / ROLE_ADMIN).
-     */
     @PostMapping
-    @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
-    public ResponseEntity<JobDTO> create(@Valid @RequestBody CreateJobRequest req, Principal principal) {
-        JobDTO created = service.create(req, principal.getName());
-        return ResponseEntity.created(URI.create("/api/jobs/" + created.getId())).body(created);
+    public ResponseEntity<JobDTO> createJob(@RequestBody JobDTO dto,
+                                            HttpServletRequest req,
+                                            Principal principal) {
+        logger.info("POST /api/jobs from IP={} authHeaderPresent={}",
+                req.getRemoteAddr(), req.getHeader("Authorization") != null);
+        String username = (principal != null) ? principal.getName() : null;
+        JobDTO created = jobService.createJob(dto, username);
+        return ResponseEntity.ok(created);
     }
 
-    /** Update job */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
-    public ResponseEntity<JobDTO> update(@PathVariable Long id, @Valid @RequestBody CreateJobRequest req) {
-        JobDTO updated = service.update(id, req);
+    public ResponseEntity<JobDTO> updateJob(@PathVariable Long id,
+                                            @RequestBody JobDTO dto,
+                                            Principal principal) {
+        String username = (principal != null) ? principal.getName() : null;
+        JobDTO updated = jobService.updateJob(id, dto, username);
         return ResponseEntity.ok(updated);
     }
 
-    /** Delete job */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+    public ResponseEntity<Void> deleteJob(@PathVariable Long id,
+                                          Principal principal) {
+        String username = (principal != null) ? principal.getName() : null;
+        jobService.deleteJob(id, username);
         return ResponseEntity.noContent().build();
     }
 
-    /** List jobs by company */
-    @GetMapping("/company/{companyId}")
-    public Page<JobDTO> byCompany(@PathVariable Long companyId,
-                                  @RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "10") int size) {
-        return service.findByCompany(companyId, page, size);
+    @GetMapping("/debug/auth")
+    public ResponseEntity<Map<String, Object>> debugAuth(Principal principal) {
+        Map<String, Object> out = new HashMap<>();
+        if (principal == null) {
+            out.put("authenticated", false);
+            out.put("principal", null);
+            out.put("authorities", null);
+            return ResponseEntity.ok(out);
+        }
+        out.put("authenticated", true);
+        out.put("principal", principal.getName());
+        try {
+            var auth = org.springframework.security.core.context.SecurityContextHolder
+                    .getContext().getAuthentication();
+            if (auth != null) {
+                out.put("authorities", auth.getAuthorities()
+                        .stream().map(a -> a.getAuthority()).toList());
+            } else {
+                out.put("authorities", List.of());
+            }
+        } catch (Exception ex) {
+            out.put("authorities", "error reading authorities: " + ex.toString());
+        }
+        return ResponseEntity.ok(out);
     }
 }

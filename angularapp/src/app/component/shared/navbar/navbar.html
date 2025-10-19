@@ -1,31 +1,58 @@
-<nav class="navbar" [class.transparent]="isTransparent">
+<nav class="navbar" [class.transparent]="isTransparent" role="navigation" aria-label="Main navigation">
   <!-- Left -->
   <div class="nav-left">
-    <div class="logo">
-      <span class="logo-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="35" fill="#0077cc" viewBox="0 0 24 24" style="vertical-align: middle;">
-          <path d="M3 17h2v2H3v-2zm4-4h2v6H7v-6zm4-4h2v10h-2V9zm4-4h2v14h-2V5zm4 
-                   8h2v6h-2v-6z"/>
+    <div class="logo" (click)="goHome()" role="button" tabindex="0" aria-label="Go to home">
+      <span class="logo-icon" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="35" viewBox="0 0 24 24" style="vertical-align: middle;">
+          <path d="M3 17h2v2H3v-2zm4-4h2v6H7v-6zm4-4h2v10h-2V9zm4-4h2v14h-2V5zm4 8h2v6h-2v-6z"/>
         </svg>
       </span>
       <span class="logo-text">
         <span class="logo-hire">Hire</span><span class="logo-connect">Connect</span>
       </span>
     </div>
-  </div>
 
-  <!-- Center -->
-  <div class="nav-center">
-    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-    <a routerLink="/jobs" routerLinkActive="active">Jobs</a>
-    <a routerLink="/companies" routerLinkActive="active">Companies</a>
-    <a routerLink="/candidate" routerLinkActive="active">Candidate</a>
-    <a routerLink="/recruiter" routerLinkActive="active">Recruiter</a>
+    <!-- 🟩 Move all center buttons here (left side near logo) -->
+    <div class="nav-center" role="navigation" aria-label="Primary">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
+      <a routerLink="/jobs" routerLinkActive="active">Jobs</a>
+      <a routerLink="/companies" routerLinkActive="active">Companies</a>
+
+      <!-- Show Profile button only if logged in -->
+      <a *ngIf="isLoggedIn"
+         (click)="goToProfile($event)"
+         [class.active]="isProfileActive()"
+         role="link"
+         aria-label="User Profile">Profile</a>
+    </div>
   </div>
 
   <!-- Right -->
-  <ul class="nav-right">
-    <li><a routerLink="/sign-in" routerLinkActive="active">Sign In</a></li>
-    <li><a routerLink="/sign-up" routerLinkActive="active">Sign Up</a></li>
+  <ul class="nav-right" role="menu" aria-label="User menu">
+    <ng-container *ngIf="!isLoggedIn; else loggedTpl">
+      <li><a routerLink="/sign-in" routerLinkActive="active">Sign In</a></li>
+      <li><a routerLink="/sign-up" routerLinkActive="active">Sign Up</a></li>
+    </ng-container>
+
+    <ng-template #loggedTpl>
+      <li class="nav-user">
+        <button class="user-chip" (click)="toggleMenu($event)" aria-haspopup="true" [attr.aria-expanded]="menuOpen" aria-label="Open user menu">
+          <span class="avatar" [ngStyle]="{'background-image': getAvatarUrl() ? 'url(' + getAvatarUrl() + ')' : getAvatarBg()}">
+            <span class="avatar-initials" *ngIf="!getAvatarUrl()">{{ getInitials() }}</span>
+          </span>
+          <span class="user-info">
+            <span class="user-label">{{ username || 'User' }}</span>
+            <span class="user-role" *ngIf="getRoleLabel()">{{ getRoleLabel() }}</span>
+          </span>
+          <span class="caret" aria-hidden="true">▾</span>
+        </button>
+
+        <div class="user-menu" *ngIf="menuOpen" (click)="$event.stopPropagation()">
+          <button (click)="goToProfile()" aria-label="Go to profile">Profile</button>
+          <div class="menu-sep" role="separator" aria-hidden="true"></div>
+          <button class="btn-logout" (click)="logout()" aria-label="Logout">Logout</button>
+        </div>
+      </li>
+    </ng-template>
   </ul>
 </nav>

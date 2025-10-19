@@ -1,65 +1,121 @@
 package com.example.springapp.controller;
 
 import com.example.springapp.dto.CompanyDTO;
-import com.example.springapp.dto.CreateCompanyRequest;
 import com.example.springapp.service.CompanyService;
-import jakarta.validation.Valid;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.net.URI;
+import jakarta.servlet.http.HttpServletRequest;
+import java.security.Principal;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/companies")
 public class CompanyController {
 
-    private final CompanyService service;
+    private static final Logger logger = LoggerFactory.getLogger(CompanyController.class);
 
-    public CompanyController(CompanyService service) { this.service = service; }
+    private final CompanyService companyService;
 
+    public CompanyController(CompanyService companyService) {
+        this.companyService = companyService;
+    }
+
+    /**
+     * List companies (optional search query param)
+     */
     @GetMapping
-    public Page<CompanyDTO> list(@RequestParam(defaultValue = "0") int page,
-                                 @RequestParam(defaultValue = "10") int size) {
-        return service.listAll(page, size);
+    public ResponseEntity<List<CompanyDTO>> list(@RequestParam(value = "search", required = false) String search) {
+        List<CompanyDTO> list = companyService.listAll(search);
+        return ResponseEntity.ok(list);
     }
 
-    @GetMapping("/search")
-    public Page<CompanyDTO> search(@RequestParam String q,
-                                   @RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "10") int size) {
-        return service.search(q, page, size);
-    }
-
+    /**
+     * Get single company by id
+     */
     @GetMapping("/{id}")
-    public ResponseEntity<CompanyDTO> get(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    public ResponseEntity<CompanyDTO> getOne(@PathVariable Long id) {
+        CompanyDTO dto = companyService.getCompanyById(id);
+        return ResponseEntity.ok(dto);
     }
 
+    /**
+     * Public listing alias (optional)
+     */
+    @GetMapping("/public")
+    public ResponseEntity<List<CompanyDTO>> listPublic(@RequestParam(value = "search", required = false) String search) {
+        List<CompanyDTO> list = companyService.listAll(search);
+        return ResponseEntity.ok(list);
+    }
+
+    /**
+     * Create a company (recruiter should be authenticated).
+     */
     @PostMapping
-    @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
-    public ResponseEntity<CompanyDTO> create(@Valid @RequestBody CreateCompanyRequest req) {
-        CompanyDTO created = service.create(req);
-        return ResponseEntity.created(URI.create("/api/companies/" + created.getId())).body(created);
+    public ResponseEntity<CompanyDTO> create(@RequestBody CompanyDTO dto, Principal principal) {
+        String username = principal != null ? principal.getName() : null;
+        CompanyDTO created = companyService.createCompany(dto, username);
+        return ResponseEntity.ok(created);
     }
 
+    /**
+     * Update company (owner/admin should be checked in security config or add logic here).
+     */
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('RECRUITER','ADMIN')")
-    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @Valid @RequestBody CreateCompanyRequest req) {
-        return ResponseEntity.ok(service.update(id, req));
+    public ResponseEntity<CompanyDTO> update(@PathVariable Long id, @RequestBody CompanyDTO dto, Principal principal) {
+        CompanyDTO updated = companyService.updateCompany(id, dto);
+        return ResponseEntity.ok(updated);
     }
 
+    /**
+     * Delete company (admin only recommended)
+     */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id, Principal principal) {
+        companyService.deleteCompany(id);
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/{id}/status")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CompanyDTO> changeStatus(@PathVariable Long id, @RequestParam String status) {
-        return ResponseEntity.ok(service.changeStatus(id, status));
+    /**
+     * Upload logo file for company (multipart form).
+     * Endpoint: POST /api/companies/{id}/logo
+     */
+    @PostMapping("/{id}/logo")
+    public ResponseEntity<?> uploadLogo(@PathVariable Long id, @RequestParam("file") MultipartFile file, Principal principal) {
+        String filename = companyService.saveLogoFile(id, file);
+        return ResponseEntity.ok(Map.of("filename", filename, "logoUrl", "/api/companies/logos/" + filename));
+    }
+
+    /**
+     * Serve stored logos by filename (public URL)
+     * GET /api/companies/logos/{filename}
+     */
+    @GetMapping("/logos/{filename:.+}")
+    public ResponseEntity<byte[]> getLogo(@PathVariable String filename, HttpServletRequest req) {
+        byte[] data = companyService.readLogoFile(filename);
+        String contentType = null;
+        try {
+            contentType = req.getServletContext().getMimeType(filename);
+        } catch (Exception ignored) {}
+        if (contentType == null) contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType(contentType));
+        headers.setCacheControl(CacheControl.noCache().getHeaderValue());
+        return new ResponseEntity<>(data, headers, HttpStatus.OK);
+    }
+
+    /**
+     * VERIFY endpoint — admin should call this to mark company verified.
+     * PATCH /api/companies/{id}/verify
+     */
+    @PatchMapping("/{id}/verify")
+    public ResponseEntity<CompanyDTO> verifyCompany(@PathVariable Long id, Principal principal) {
+        // Optionally: check principal has admin role here, or rely on method/security config.
+        CompanyDTO updated = companyService.verifyCompany(id);
+        return ResponseEntity.ok(updated);
     }
 }

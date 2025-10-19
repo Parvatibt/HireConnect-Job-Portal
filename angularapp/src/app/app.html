@@ -1,15 +1,18 @@
-<!-- Show normal navbar only outside admin routes -->
+<!-- keep navbar/footer visibility checks as you have them -->
 <ng-container *ngIf="!isAdminRoute() && !isResetPasswordRoute()">
   <app-navbar></app-navbar>
 </ng-container>
 
-<!-- Show sidebar only inside admin routes -->
-<ng-container *ngIf="isAdminRoute()">
-  <app-admin-sidebar *ngIf="!isLoginPage()"></app-admin-sidebar>
-</ng-container>
+<div class="app-layout">
+  <ng-container *ngIf="isAdminRoute()">
+    <app-admin-sidebar *ngIf="!isAdminLogin()"></app-admin-sidebar>
+  </ng-container>
 
-<!-- Main outlet -->
-<router-outlet></router-outlet>
+  <!-- Main area: make it a flex column so footer sits at bottom -->
+  <main class="main-content" role="main">
+    <router-outlet></router-outlet>
+  </main>
+</div>
 
-<!-- footer component -->
+<!-- Footer now renders on all pages -->
 <app-footer></app-footer>

@@ -1,0 +1,10 @@
+<div class="apps">
+  <h2>My Applications</h2>
+  <div *ngIf="loading">Loading…</div>
+  <div *ngIf="!loading && apps.length===0">No applications yet.</div>
+  <ul>
+    <li *ngFor="let a of apps">
+      {{a.job.title}} - <span class="status" [ngClass]="a.status.toLowerCase()">{{a.status}}</span>
+    </li>
+  </ul>
+</div>

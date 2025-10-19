@@ -1,16 +1,43 @@
+<!-- src/app/component/user/review/review-list/review-list.html -->
+<div class="reviews-page">
+  <div class="container">
+    <header class="page-head">
+      <h1>What people say</h1>
+      <p class="lead">Recent feedback from users</p>
+    </header>
 
-<div class="review-list-container">
-  <h3>What Our Users Say</h3>
-  <div *ngIf="reviews.length; else noReviews">
-    <div class="review-item" *ngFor="let review of reviews">
-      <div class="review-header">
-        <span class="review-role">{{ review.role }}</span>
-        <span class="review-date">{{ review.date }}</span>
-      </div>
-      <div class="review-content">{{ review.text }}</div>
+    <div class="controls">
+      <label>
+        Show
+        <select [(ngModel)]="limit" (change)="reload()" aria-label="Number of reviews to show">
+          <option *ngFor="let n of [10,20,50,100]" [ngValue]="n">{{ n }}</option>
+          <option [ngValue]="'all'">All</option>
+        </select>
+        reviews
+      </label>
+      <button class="btn refresh" (click)="reload()" [disabled]="loading">Refresh</button>
+    </div>
+
+    <div *ngIf="loading" class="loading">
+      <div class="skeleton" *ngFor="let s of [1,2,3,4]"></div>
+    </div>
+
+    <section *ngIf="!loading && reviews?.length" class="reviews-grid" aria-live="polite">
+      <article *ngFor="let r of reviews; trackBy:trackById" class="review-card">
+        <div class="card-head">
+          <div class="avatar" aria-hidden="true">{{ (r.name || '?') | slice:0:1 }}</div>
+          <div class="head-meta">
+            <div class="name">{{ r.name }}</div>
+            <div class="designation" *ngIf="r.designation">{{ r.designation }}</div>
+          </div>
+          <div class="date" *ngIf="r.createdAt">{{ r.createdAt | date:'mediumDate' }}</div>
+        </div>
+        <div class="card-body">{{ r.message }}</div>
+      </article>
+    </section>
+
+    <div *ngIf="!loading && (!reviews || reviews.length === 0)" class="empty">
+      <p>No feedback yet — be the first to <a routerLink="/give-feedback">leave a review</a>.</p>
     </div>
   </div>
-  <ng-template #noReviews>
-    <div class="no-reviews">No reviews yet. Be the first to share your experience!</div>
-  </ng-template>
 </div>

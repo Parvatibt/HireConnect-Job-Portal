@@ -1,20 +1,58 @@
 <app-admin-sidebar></app-admin-sidebar>
+
 <div class="admin-content-wrapper">
   <div class="admin-content-card">
     <h2>Manage Users</h2>
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Role</th>
-        <th>Action</th>
-      </tr>
-      <tr *ngFor="let user of users">
-        <td>{{ user.id }}</td>
-        <td>{{ user.name }}</td>
-        <td>{{ user.role }}</td>
-        <td><button>Edit</button> <button>Delete</button></td>
-      </tr>
+
+    <div class="controls-row">
+      <div class="search-group">
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          placeholder="Search by ID, username, name, company or role..."
+          aria-label="Search users"
+        />
+        <button type="button" class="btn-clear" (click)="clearSearch()" title="Clear search">✕</button>
+      </div>
+
+      <div class="filter-group">
+        <label for="roleFilter">Role</label>
+        <select id="roleFilter" [(ngModel)]="selectedRole" aria-label="Filter by role">
+          <option value="">All roles</option>
+          <option *ngFor="let r of uniqueRoles()" [value]="r">{{ r }}</option>
+        </select>
+      </div>
+    </div>
+
+    <div *ngIf="loading" style="margin:12px 0;">Loading users…</div>
+    <div *ngIf="error" class="message error" style="margin:12px 0;">{{ error }}</div>
+
+    <table *ngIf="!loading && filteredUsers.length > 0" class="users-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Name</th>
+          <th>Company</th>
+          <th>Role</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of filteredUsers; trackBy: trackById">
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.fullName }}</td>
+          <td>{{ user.companyName || '—' }}</td>
+          <td>{{ user.primaryRole || '—' }}</td>
+          <td class="actions-cell">
+            <button type="button" (click)="onEdit(user)">Edit</button>
+            <button type="button" (click)="onDelete(user)" class="btn-danger">Delete</button>
+          </td>
+        </tr>
+      </tbody>
     </table>
+
+    <div *ngIf="!loading && filteredUsers.length === 0">No users found.</div>
   </div>
 </div>

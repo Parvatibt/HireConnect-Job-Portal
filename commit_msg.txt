@@ -1,0 +1,1 @@
+﻿Add landing-page, sign-in/sign-up & admin-login; update navbar and jobs-list; update tests; add assets and .gitattributes

@@ -1,23 +1,93 @@
+<!-- src/app/admin/manage-companies/manage-companies.html -->
 <app-admin-sidebar></app-admin-sidebar>
+
 <div class="admin-content-wrapper">
   <div class="admin-content-card">
-    <h2>Manage Companies</h2>
-    <table>
-      <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-      <tr *ngFor="let company of companies">
-        <td>{{ company.id }}</td>
-        <td>{{ company.name }}</td>
-        <td>{{ company.status }}</td>
-        <td>
-          <button>Edit</button>
-          <button>Delete</button>
-        </td>
-      </tr>
-    </table>
+    <div class="card-header">
+      <h2>Manage Companies</h2>
+      <div class="header-actions">
+        <button class="btn-primary" (click)="loadCompanies()" [disabled]="loading">Refresh</button>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="controls-row">
+      <div class="search-group">
+        <input
+          type="search"
+          [(ngModel)]="searchTerm"
+          placeholder="Search by ID or company name..."
+          aria-label="Search companies"
+        />
+        <button type="button" class="btn-clear" (click)="clearFilters()" title="Clear filters">✕</button>
+      </div>
+
+      <div class="filter-group">
+        <label for="statusFilter">Status</label>
+        <select id="statusFilter" [(ngModel)]="statusFilter">
+          <option value="">All</option>
+          <option value="verified">Verified</option>
+          <option value="pending">Pending</option>
+        </select>
+
+        <label for="from">Created</label>
+        <input id="from" type="date" [(ngModel)]="createdFrom" />
+
+        <label for="to">—</label>
+        <input id="to" type="date" [(ngModel)]="createdTo" />
+      </div>
+    </div>
+
+    <!-- Loading / error -->
+    <div *ngIf="loading" class="muted hint">Loading companies…</div>
+    <div *ngIf="error" class="message error">{{ error }}</div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+      <table *ngIf="!loading && filteredCompanies.length > 0" class="companies-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Created</th>
+            <th style="width:220px">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let company of filteredCompanies; trackBy: trackById">
+            <td>{{ company.id }}</td>
+            <td>{{ company.name }}</td>
+            <td>
+              <span [class.badge-verified]="company.verified" [class.badge-pending]="!company.verified">
+                {{ company.verified ? 'Verified' : 'Pending' }}
+              </span>
+            </td>
+            <td>{{ company.createdAt ? (company.createdAt | date:'mediumDate') : '—' }}</td>
+            <td class="actions-cell">
+              <button class="btn-edit" (click)="onEdit(company)" [disabled]="isActionLoading(company)">Edit</button>
+
+              <button class="btn-verify"
+                      *ngIf="!company.verified"
+                      (click)="onVerify(company)"
+                      [disabled]="isActionLoading(company)">
+                <span *ngIf="!isActionLoading(company)">Verify</span>
+                <span *ngIf="isActionLoading(company)">Verifying…</span>
+              </button>
+
+              <button class="btn-delete"
+                      (click)="onDelete(company)"
+                      [disabled]="isActionLoading(company)">
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div *ngIf="!loading && filteredCompanies.length === 0" class="muted hint">
+      No companies found.
+    </div>
   </div>
 </div>
